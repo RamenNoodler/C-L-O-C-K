@@ -1,96 +1,99 @@
 const root = document.documentElement;
-const clockMain = document.getElementById('clock-main');
-const clockReflect = document.getElementById('clock-reflect');
 
-// 1. Precise Sync Logic
-function updateClocks() {
+// 1. Clock Engine
+function updateTime() {
     const timeStr = new Date().toLocaleTimeString();
-    clockMain.textContent = timeStr;
-    clockReflect.textContent = timeStr;
+    document.getElementById('clock-main').textContent = timeStr;
+    document.getElementById('clock-reflect').textContent = timeStr;
 }
-setInterval(updateClocks, 1000);
-updateClocks();
+setInterval(updateTime, 1000);
+updateTime();
 
-// 2. Animated Wave Engine (Reflection Only)
-let angle = 0;
+// 2. Ripple Animation
+let phase = 0;
 function animateWaves() {
-    angle += 0.004;
-    const shift = 0.05 + Math.sin(angle) * 0.02;
-    document.querySelector('feTurbulence').setAttribute('baseFrequency', `0.01 ${shift}`);
+    phase += 0.006;
+    const ripple = 0.05 + Math.sin(phase) * 0.03;
+    document.querySelector('feTurbulence').setAttribute('baseFrequency', `0.005 ${ripple}`);
     requestAnimationFrame(animateWaves);
 }
 animateWaves();
 
-// 3. Map & Location Engine
-let map = L.map('map').setView([45, -100], 3); 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+// 3. Precise Weather Mapping (WMO Standards)
+const weatherMap = {
+    0: "Clear Skies", 1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast",
+    45: "Fog", 48: "Rime Fog", 51: "Light Drizzle", 53: "Drizzle", 55: "Heavy Drizzle",
+    61: "Slight Rain", 63: "Moderate Rain", 65: "Heavy Rain", 71: "Slight Snow",
+    73: "Moderate Snow", 75: "Heavy Snow", 95: "Thunderstorm"
+};
 
-// Pre-defined markers (requested regions)
-const markers = [
-    { name: "Alaska", lat: 64.2, lng: -149.5 },
-    { name: "Arizona", lat: 34.0, lng: -111.0 },
-    { name: "New York", lat: 40.7, lng: -74.0 },
-    { name: "London", lat: 51.5, lng: -0.1 }
-];
-
-markers.forEach(loc => {
-    let m = L.marker([loc.lat, loc.lng]).addTo(map);
-    m.on('click', () => getWeather(loc.lat, loc.lng, loc.name));
-});
-
-map.on('click', e => getWeather(e.latlng.lat, e.latlng.lng, "Custom Point"));
-
-// 4. Weather Logic (Based on your Python logic)
 async function getWeather(lat, lng, label) {
-    document.getElementById('city-name').innerText = "Fetching...";
     try {
-        const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true`);
+        // Fetching temperature, feels-like, and wind speed
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current_weather=true&hourly=apparent_temperature`;
+        const res = await fetch(url);
         const data = await res.json();
-        const weather = data.current_weather;
         
-        document.getElementById('temp').innerText = `${Math.round(weather.temperature)}°C`;
-        document.getElementById('city-name').innerText = label;
-        
-        // Maps numeric codes to descriptions like your Python code
-        const codes = { 0: "Clear", 1: "Mainly Clear", 2: "Partly Cloudy", 3: "Overcast", 45: "Foggy", 61: "Rainy" };
-        document.getElementById('condition').innerText = codes[weather.weathercode] || "Stable";
-    } catch {
-        document.getElementById('city-name').innerText = "Error: API Down";
+        const curr = data.current_weather;
+        const apparent = data.hourly.apparent_temperature[0]; // Nearest hourly feels like
+
+        document.getElementById('temp').innerText = `${Math.round(curr.temperature)}°C`;
+        document.getElementById('condition-label').innerText = weatherMap[curr.weathercode] || "Stable";
+        document.getElementById('city-display').innerText = label.toUpperCase();
+        document.getElementById('feels-like').innerText = `Feels like: ${Math.round(apparent)}°C`;
+        document.getElementById('wind').innerText = `Wind: ${curr.windspeed} km/h`;
+    } catch (e) {
+        document.getElementById('city-display').innerText = "Network Error";
     }
 }
 
-// City Search functionality (Python equivalent)
+// 4. Map & Markers (Alaska & Arizona Specific)
+let map = L.map('map').setView([45, -100], 3);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+const regions = [
+    { name: "Anchorage, AK", lat: 61.2181, lng: -149.9003 },
+    { name: "Phoenix, AZ", lat: 33.4484, lng: -112.0740 }
+];
+
+regions.forEach(loc => {
+    let pin = L.marker([loc.lat, loc.lng]).addTo(map);
+    pin.on('click', () => getWeather(loc.lat, loc.lng, loc.name));
+});
+
+map.on('click', e => getWeather(e.latlng.lat, e.latlng.lng, "Pinned Location"));
+
+// 5. Tool Toggles & Customization
 document.getElementById('search-btn').onclick = async () => {
     const city = document.getElementById('city-input').value;
-    if(!city) return;
-    try {
-        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1`);
-        const data = await res.json();
-        if(data.results) {
-            const { latitude, longitude, name } = data.results[0];
-            map.setView([latitude, longitude], 8);
-            getWeather(latitude, longitude, name);
-        }
-    } catch (e) { alert("City not found"); }
+    const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}&count=1`);
+    const data = await res.json();
+    if(data.results) {
+        const { latitude, longitude, name } = data.results[0];
+        map.setView([latitude, longitude], 9);
+        getWeather(latitude, longitude, name);
+    }
 };
 
-// 5. Controls & Sidebar
 document.getElementById('menu-toggle').onclick = () => {
     document.getElementById('settings-sidebar').classList.add('active');
     setTimeout(() => map.invalidateSize(), 400);
 };
-document.getElementById('close-menu').onclick = () => document.getElementById('settings-sidebar').classList.remove('active');
-document.getElementById('study-btn').onclick = () => document.getElementById('study-modal').style.display = 'block';
-document.getElementById('close-study').onclick = () => document.getElementById('study-modal').style.display = 'none';
 
 document.getElementById('font-color-pk').oninput = (e) => {
-    root.style.setProperty('--font-color', e.target.value);
-    document.getElementById('font-color-hex').value = e.target.value.toUpperCase();
+    const val = e.target.value;
+    root.style.setProperty('--font-color', val);
+    document.getElementById('font-color-hex').value = val.toUpperCase();
 };
 
 document.getElementById('wave-slider').oninput = (e) => {
     document.getElementById('wave-intensity-map').setAttribute('scale', e.target.value);
 };
+
+// Simple Close Logic
+document.getElementById('close-menu').onclick = () => document.getElementById('settings-sidebar').classList.remove('active');
+document.getElementById('study-btn').onclick = () => document.getElementById('study-modal').style.display = 'block';
+document.getElementById('close-study').onclick = () => document.getElementById('study-modal').style.display = 'none';
 
 // Calculator Logic
 function calc(v) { document.getElementById('calc-screen').value += v; }
