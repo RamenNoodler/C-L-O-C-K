@@ -12,59 +12,75 @@
     <div id="video-bg-container"></div>
     <div id="overlay"></div>
 
+    <!-- Top Right Controls -->
     <div class="top-controls">
         <button id="menu-toggle" class="glass-btn">⚙️ Settings</button>
         <button id="study-btn" class="glass-btn">📚 Study Suite</button>
         <div id="weather-widget" class="glass-card">
-            <span id="temp">--°C</span>
-            <span id="condition">Select Location</span>
+            <div id="temp">--°C</div>
+            <div id="city-name">Select Location</div>
+            <div id="condition">Cloudy</div>
         </div>
     </div>
 
-    <div id="clock-container">
-        <!-- The Real Clock -->
+    <!-- Clock & Reflection Setup -->
+    <div id="clock-wrapper">
         <div id="clock-main">00:00:00</div>
         
-        <!-- The Water Reflection -->
         <div id="reflect-box">
             <div id="clock-reflect">00:00:00</div>
         </div>
         
-        <!-- Wave Engine -->
+        <!-- Wave Filter for Reflection Only -->
         <svg style="position: absolute; width: 0; height: 0;">
             <filter id="water-filter">
                 <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="20" id="wave-intensity-map" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" id="wave-intensity-map" />
             </filter>
         </svg>
     </div>
 
+    <!-- Settings Sidebar -->
     <div id="settings-sidebar" class="sidebar">
         <div class="sidebar-header">
-            <h3>Customization</h3>
+            <h3>Configuration</h3>
             <button id="close-menu">×</button>
         </div>
         
         <div class="setting-group">
-            <label>Theme Color</label>
-            <div class="color-picker-row">
-                <input type="color" id="font-color-pk" value="#00f2ff">
-                <input type="text" id="font-color-hex" value="#00f2ff">
+            <label>City Search (from Python logic)</label>
+            <div class="search-row">
+                <input type="text" id="city-input" placeholder="Enter city (e.g. Phoenix)">
+                <button id="search-btn">Go</button>
             </div>
         </div>
 
         <div class="setting-group">
-            <label>Wave Intensity</label>
-            <input type="range" id="wave-slider" min="0" max="100" value="25">
+            <label>Regional Weather Map</label>
+            <div id="map"></div>
         </div>
 
         <div class="setting-group">
-            <label>Weather Regions</label>
-            <div id="map"></div>
-            <p style="font-size: 0.7rem; color: #888; margin-top: 5px;">Markers show mapped weather zones. Click any marker or any spot on the map.</p>
+            <label>Theme & Visuals</label>
+            <div class="color-picker-row">
+                <input type="color" id="font-color-pk" value="#00f2ff">
+                <input type="text" id="font-color-hex" value="#00f2ff">
+            </div>
+            <div class="slider-row">
+                <span>Waves</span>
+                <input type="range" id="wave-slider" min="0" max="100" value="30">
+            </div>
         </div>
 
-        <button id="apply-bg-btn" class="action-btn">Save Changes</button>
+        <div class="setting-group">
+            <label>Background</label>
+            <select id="bg-type">
+                <option value="color">Solid Color</option>
+                <option value="youtube">YouTube URL</option>
+            </select>
+            <input type="text" id="bg-val" placeholder="Hex or URL">
+        </div>
+        <button id="apply-bg-btn" class="action-btn">Apply Changes</button>
     </div>
 
     <!-- Study Modal -->
@@ -87,7 +103,7 @@
                     <canvas id="graph-canvas" width="400" height="200"></canvas>
                 </div>
             </div>
-            <button id="close-study" class="glass-btn" style="margin-top:20px">Back to Clock</button>
+            <button id="close-study" class="glass-btn" style="margin-top:20px">Close Suite</button>
         </div>
     </div>
 
