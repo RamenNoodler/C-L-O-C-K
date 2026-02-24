@@ -1,0 +1,59 @@
+:root {
+    --bg-color: #121212;
+    --font-color: #ffffff;
+    --font-size: 80px;
+    --font-family: 'Orbitron', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--font-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s ease;
+}
+
+#clock-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#clock-display {
+    font-size: var(--font-size);
+    font-family: var(--font-family);
+    color: var(--font-color);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+#settings-panel {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    margin-bottom: 30px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#settings-panel h3 { margin: 0 0 10px 0; font-size: 1.2rem; }
+label { font-size: 0.8rem; opacity: 0.8; }
+input, select, button {
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+    background: #222;
+    color: white;
+}
+button { cursor: pointer; background: #444; margin-top: 10px; }
+button:hover { background: #555; }
