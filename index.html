@@ -3,36 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glow & Reflect Study Clock</title>
+    <title>Glow & Live Reflect Clock</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Background Layer -->
     <div id="video-bg-container"></div>
     <div id="overlay"></div>
 
-    <!-- Compact Top-Right Menu -->
     <div class="top-controls">
         <button id="menu-toggle" class="glass-btn">⚙️ Settings</button>
         <button id="study-btn" class="glass-btn">📚 Study Suite</button>
     </div>
 
-    <!-- Main Clock and Reflection -->
-    <div id="clock-wrapper">
-        <div id="clock-display">00:00:00</div>
+    <!-- Clock System -->
+    <div id="clock-container">
+        <!-- Main Clock (Sharp) -->
+        <div id="clock-display" class="clock-text">00:00:00</div>
         
-        <!-- SVG Filter for Animated Water Waves -->
+        <!-- Reflection Clock (Distorted) -->
+        <div id="clock-reflection" class="clock-text">00:00:00</div>
+
+        <!-- Wave Distortion Filter -->
         <svg style="position: absolute; width: 0; height: 0;">
             <filter id="water-filter">
                 <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" id="wave-intensity-map" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" id="wave-intensity-map" />
             </filter>
         </svg>
     </div>
 
-    <!-- Sidebar Settings -->
+    <!-- Settings Sidebar -->
     <div id="settings-sidebar" class="sidebar">
         <div class="sidebar-header">
             <h3>Customization</h3>
@@ -53,21 +54,20 @@
         </div>
 
         <div class="setting-group">
-            <label>Wave Intensity</label>
-            <input type="range" id="wave-slider" min="0" max="60" value="15">
+            <label>Wave Intensity (Reflection Only)</label>
+            <input type="range" id="wave-slider" min="0" max="100" value="25">
         </div>
 
         <div class="setting-group">
-            <label>Background Type</label>
+            <label>Background</label>
             <select id="bg-type">
                 <option value="color">Solid Color</option>
                 <option value="youtube">YouTube URL</option>
-                <option value="video">Direct Video Link</option>
             </select>
-            <input type="text" id="bg-val" placeholder="Color hex or URL">
+            <input type="text" id="bg-val" placeholder="Color or URL">
         </div>
 
-        <button id="apply-bg-btn" class="action-btn">Apply Background</button>
+        <button id="apply-bg-btn" class="action-btn">Apply Changes</button>
     </div>
 
     <!-- Study Modal -->
@@ -78,7 +78,6 @@
                 <button id="close-study">×</button>
             </div>
             <div class="tool-grid">
-                <!-- Theme-reactive Calculator -->
                 <div class="tool-card">
                     <h3>Calculator</h3>
                     <input type="text" id="calc-screen" placeholder="0">
@@ -89,9 +88,8 @@
                         <button onclick="calc('0')">0</button><button onclick="calc('.')">.</button><button onclick="calculate()" class="primary-calc">=</button><button onclick="clearCalc()">C</button>
                     </div>
                 </div>
-                <!-- Dynamic Grapher -->
                 <div class="tool-card">
-                    <h3>Grapher (y = f(x))</h3>
+                    <h3>Grapher (y=...)</h3>
                     <input type="text" id="graph-input" value="Math.sin(x) * 2">
                     <canvas id="graph-canvas" width="400" height="250"></canvas>
                 </div>
