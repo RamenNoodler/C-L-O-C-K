@@ -1,51 +1,67 @@
-:root { --font-color: #00f2ff; --bg-color: #050505; --glow: 20px; }
-
-body { 
-    margin: 0; height: 100vh; background: var(--bg-color); 
-    color: var(--font-color); font-family: 'Orbitron', sans-serif; 
-    display: flex; align-items: center; justify-content: center; overflow: hidden;
+:root {
+    --font-color: #ff2d2d;
+    --bg-color: #050505;
+    --glow: 20px;
 }
 
-#clock-wrapper { position: relative; text-align: center; }
+body {
+    margin: 0; padding: 0; background: var(--bg-color);
+    color: var(--font-color); font-family: 'Orbitron', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    height: 100vh; overflow: hidden;
+}
 
-/* The Main Clock stays sharp */
+/* Background Logic */
+#video-bg-container { position: fixed; inset: 0; z-index: -2; }
+#overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: -1; }
+iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
+
+/* The Dual-Clock Reflection Stack */
+#clock-wrapper {
+    display: flex; flex-direction: column; align-items: center;
+}
+
 #clock-main {
     font-size: 130px; font-weight: bold;
-    color: var(--font-color); text-shadow: 0 0 var(--glow) var(--font-color);
+    text-shadow: 0 0 var(--glow) var(--font-color);
+    line-height: 1;
 }
 
-/* Reflection specific container */
-#clock-reflect-container {
-    margin-top: -10px; opacity: 0.5;
-    transform: scaleY(-1); /* Flips it vertically */
-    filter: url(#water-filter) blur(2px); /* Only reflection gets waves */
+#reflection-area {
+    margin-top: 10px;
+    transform: scaleY(-1); /* Flips it upside down */
+    filter: url(#water-filter); /* Applies wave movement ONLY here */
+    opacity: 0.6;
 }
+
 #clock-reflection {
     font-size: 130px; font-weight: bold;
-    color: var(--font-color);
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), transparent);
+    line-height: 1;
+    /* Fades the reflection out as it goes "deeper" into the water */
+    mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 80%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 80%);
 }
 
-/* Weather Widget */
-#weather-widget {
-    padding: 10px; text-align: right; 
-    border: 1px solid var(--font-color); border-radius: 5px;
-}
-#temp { font-size: 1.2rem; display: block; }
-#condition { font-size: 0.7rem; text-transform: uppercase; }
-
-/* Map inside settings */
-#map { height: 150px; width: 100%; border-radius: 5px; border: 1px solid var(--font-color); }
-
+/* UI Layout */
 .top-controls { position: fixed; top: 15px; right: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
-.glass-btn, .glass-card { background: rgba(0,0,0,0.6); color: var(--font-color); border: 1px solid var(--font-color); cursor: pointer; backdrop-filter: blur(10px); }
+.glass-btn { background: rgba(0,0,0,0.7); pointer-events: all; border: 1px solid var(--font-color); color: var(--font-color); padding: 8px 12px; border-radius: 4px; cursor: pointer; backdrop-filter: blur(10px); }
 .glass-btn:hover { background: var(--font-color); color: #000; }
+
+.glass-card { background: rgba(0,0,0,0.8); border: 1px solid var(--font-color); padding: 10px; border-radius: 8px; text-align: right; }
+#temp { color: white; font-weight: bold; display: block; font-size: 1.1rem; }
+#condition { font-size: 0.7rem; color: var(--font-color); }
 
 .sidebar { position: fixed; right: -350px; top: 0; width: 300px; height: 100%; background: #000; border-left: 2px solid var(--font-color); padding: 25px; transition: 0.4s; z-index: 2000; }
 .sidebar.active { right: 0; }
+#map { height: 150px; border: 1px solid var(--font-color); margin: 10px 0; }
 
-.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; }
-.modal-content { max-width: 800px; margin: 50px auto; background: #000; border: 2px solid var(--font-color); padding: 30px; border-radius: 10px; }
-.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.tool-card { border: 1px solid #222; padding: 15px; }
-input[type="text"] { width: 100%; padding: 8px; background: #111; border: 1px solid var(--font-color); color: white; margin-bottom: 10px; }
+/* Study Tools Styling */
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; }
+.modal-content { max-width: 900px; margin: 40px auto; background: #000; border: 2px solid var(--font-color); padding: 30px; border-radius: 12px; }
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.tool-card { background: #080808; border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; }
+.tool-card input { width: 100%; background: transparent; border: 1px solid var(--font-color); color: var(--font-color); padding: 10px; margin-bottom: 15px; }
+.calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.calc-buttons button { background: #111; color: var(--font-color); border: 1px solid var(--font-color); padding: 15px; cursor: pointer; }
+.calc-buttons button:hover { background: var(--font-color); color: #000; }
+canvas { background: #000; border: 1px solid var(--font-color); width: 100%; }
