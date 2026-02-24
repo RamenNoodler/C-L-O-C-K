@@ -3,23 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clock</title>
+    <title>Glow & Reflect Study Clock</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto+Mono&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Background Layer -->
     <div id="video-bg-container"></div>
     <div id="overlay"></div>
 
+    <!-- Compact Top-Right Menu -->
     <div class="top-controls">
-        <button id="study-btn" class="glass-btn">📚 Study Tools</button>
         <button id="menu-toggle" class="glass-btn">⚙️ Settings</button>
+        <button id="study-btn" class="glass-btn">📚 Study Suite</button>
     </div>
 
+    <!-- Main Clock and Reflection -->
     <div id="clock-wrapper">
         <div id="clock-display">00:00:00</div>
-        <!-- SVG Filter for Water Ripple -->
-        <svg style="display:none">
+        
+        <!-- SVG Filter for Animated Water Waves -->
+        <svg style="position: absolute; width: 0; height: 0;">
             <filter id="water-filter">
                 <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise" />
                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" id="wave-intensity-map" />
@@ -27,6 +32,7 @@
         </svg>
     </div>
 
+    <!-- Sidebar Settings -->
     <div id="settings-sidebar" class="sidebar">
         <div class="sidebar-header">
             <h3>Customization</h3>
@@ -36,58 +42,56 @@
         <div class="setting-group">
             <label>Font Color (Hex)</label>
             <div class="color-picker-row">
-                <input type="color" id="font-color-pk">
-                <input type="text" id="font-color-hex" placeholder="#FFFFFF">
+                <input type="color" id="font-color-pk" value="#00f2ff">
+                <input type="text" id="font-color-hex" value="#00f2ff">
             </div>
         </div>
 
         <div class="setting-group">
             <label>Glow Intensity</label>
-            <input type="range" id="glow-slider" min="0" max="40" value="10">
+            <input type="range" id="glow-slider" min="0" max="80" value="20">
         </div>
 
         <div class="setting-group">
-            <label>Reflection & Waves</label>
-            <div class="toggle-row">
-                <span>Enable:</span> <input type="checkbox" id="reflect-toggle" checked>
-            </div>
             <label>Wave Intensity</label>
-            <input type="range" id="wave-slider" min="0" max="50" value="10">
+            <input type="range" id="wave-slider" min="0" max="60" value="15">
         </div>
 
         <div class="setting-group">
-            <label>Background</label>
+            <label>Background Type</label>
             <select id="bg-type">
-                <option value="color">Color</option>
-                <option value="youtube">YouTube</option>
-                <option value="video">Direct Video</option>
+                <option value="color">Solid Color</option>
+                <option value="youtube">YouTube URL</option>
+                <option value="video">Direct Video Link</option>
             </select>
-            <input type="text" id="bg-val" placeholder="Hex color or URL">
+            <input type="text" id="bg-val" placeholder="Color hex or URL">
         </div>
 
-        <button id="apply-btn" class="glass-btn primary">Save & Apply</button>
+        <button id="apply-bg-btn" class="action-btn">Apply Background</button>
     </div>
 
     <!-- Study Modal -->
     <div id="study-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Study Suite</h2>
+                <h2>Study Tools</h2>
                 <button id="close-study">×</button>
             </div>
             <div class="tool-grid">
+                <!-- Theme-reactive Calculator -->
                 <div class="tool-card">
                     <h3>Calculator</h3>
-                    <input type="text" id="calc-screen" placeholder="Type here...">
+                    <input type="text" id="calc-screen" placeholder="0">
                     <div class="calc-buttons">
                         <button onclick="calc('7')">7</button><button onclick="calc('8')">8</button><button onclick="calc('9')">9</button><button onclick="calc('/')">/</button>
                         <button onclick="calc('4')">4</button><button onclick="calc('5')">5</button><button onclick="calc('6')">6</button><button onclick="calc('*')">*</button>
                         <button onclick="calc('1')">1</button><button onclick="calc('2')">2</button><button onclick="calc('3')">3</button><button onclick="calc('-')">-</button>
-                        <button onclick="calc('0')">0</button><button onclick="calc('.')">.</button><button onclick="calculate()" class="primary">=</button><button onclick="clearCalc()">C</button>
+                        <button onclick="calc('0')">0</button><button onclick="calc('.')">.</button><button onclick="calculate()" class="primary-calc">=</button><button onclick="clearCalc()">C</button>
                     </div>
                 </div>
+                <!-- Dynamic Grapher -->
                 <div class="tool-card">
-                    <h3>Grapher (y=...)</h3>
+                    <h3>Grapher (y = f(x))</h3>
                     <input type="text" id="graph-input" value="Math.sin(x) * 2">
                     <canvas id="graph-canvas" width="400" height="250"></canvas>
                 </div>
