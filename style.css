@@ -1,67 +1,49 @@
-:root {
-    --font-color: #ff2d2d;
-    --bg-color: #050505;
-    --glow: 20px;
+:root { --font-color: #00f2ff; --bg-color: #030303; --glow: 20px; }
+
+body { 
+    margin: 0; height: 100vh; background: var(--bg-color); 
+    color: var(--font-color); font-family: 'Orbitron', sans-serif; 
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
 
-body {
-    margin: 0; padding: 0; background: var(--bg-color);
-    color: var(--font-color); font-family: 'Orbitron', sans-serif;
-    display: flex; align-items: center; justify-content: center;
-    height: 100vh; overflow: hidden;
+#clock-container {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
 }
 
-/* Background Logic */
-#video-bg-container { position: fixed; inset: 0; z-index: -2; }
-#overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: -1; }
-iframe { width: 100%; height: 100%; object-fit: cover; border: none; }
-
-/* The Dual-Clock Reflection Stack */
-#clock-wrapper {
-    display: flex; flex-direction: column; align-items: center;
-}
-
+/* Main Sharp Clock */
 #clock-main {
-    font-size: 130px; font-weight: bold;
+    font-size: clamp(60px, 10vw, 150px);
+    font-weight: 900;
+    color: var(--font-color);
     text-shadow: 0 0 var(--glow) var(--font-color);
     line-height: 1;
 }
 
-#reflection-area {
-    margin-top: 10px;
-    transform: scaleY(-1); /* Flips it upside down */
-    filter: url(#water-filter); /* Applies wave movement ONLY here */
-    opacity: 0.6;
+/* Reflection Box */
+#reflect-box {
+    margin-top: 5px;
+    transform: scaleY(-1); /* Correctly mirrors the clock */
+    opacity: 0.4;
+    filter: url(#water-filter) blur(2px); /* Only reflection is wavy */
+    mask-image: linear-gradient(to top, rgba(0,0,0,1) 40%, transparent 90%);
 }
 
-#clock-reflection {
-    font-size: 130px; font-weight: bold;
-    line-height: 1;
-    /* Fades the reflection out as it goes "deeper" into the water */
-    mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 80%);
-    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 80%);
+#clock-reflect {
+    font-size: clamp(60px, 10vw, 150px);
+    font-weight: 900;
+    color: var(--font-color);
 }
 
-/* UI Layout */
-.top-controls { position: fixed; top: 15px; right: 15px; display: flex; flex-direction: column; gap: 8px; z-index: 1000; }
-.glass-btn { background: rgba(0,0,0,0.7); pointer-events: all; border: 1px solid var(--font-color); color: var(--font-color); padding: 8px 12px; border-radius: 4px; cursor: pointer; backdrop-filter: blur(10px); }
-.glass-btn:hover { background: var(--font-color); color: #000; }
+.top-controls { position: fixed; top: 15px; right: 15px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; align-items: flex-end; }
+.glass-btn, .glass-card { background: rgba(0,0,0,0.7); color: var(--font-color); border: 1px solid var(--font-color); cursor: pointer; backdrop-filter: blur(15px); padding: 8px 15px; border-radius: 4px; transition: 0.3s; }
+.glass-btn:hover { background: var(--font-color); color: #000; box-shadow: 0 0 15px var(--font-color); }
 
-.glass-card { background: rgba(0,0,0,0.8); border: 1px solid var(--font-color); padding: 10px; border-radius: 8px; text-align: right; }
-#temp { color: white; font-weight: bold; display: block; font-size: 1.1rem; }
-#condition { font-size: 0.7rem; color: var(--font-color); }
+#map { height: 180px; width: 100%; border: 1px solid var(--font-color); border-radius: 4px; background: #111; }
 
-.sidebar { position: fixed; right: -350px; top: 0; width: 300px; height: 100%; background: #000; border-left: 2px solid var(--font-color); padding: 25px; transition: 0.4s; z-index: 2000; }
+.sidebar { position: fixed; right: -350px; top: 0; width: 300px; height: 100%; background: #000; border-left: 1px solid var(--font-color); padding: 25px; transition: 0.4s; z-index: 2000; overflow-y: auto; }
 .sidebar.active { right: 0; }
-#map { height: 150px; border: 1px solid var(--font-color); margin: 10px 0; }
+.setting-group { margin-bottom: 25px; }
 
-/* Study Tools Styling */
 .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 3000; }
-.modal-content { max-width: 900px; margin: 40px auto; background: #000; border: 2px solid var(--font-color); padding: 30px; border-radius: 12px; }
+.modal-content { max-width: 900px; margin: 40px auto; background: #000; border: 1px solid var(--font-color); padding: 40px; border-radius: 8px; }
 .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-.tool-card { background: #080808; border: 1px solid rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; }
-.tool-card input { width: 100%; background: transparent; border: 1px solid var(--font-color); color: var(--font-color); padding: 10px; margin-bottom: 15px; }
-.calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-.calc-buttons button { background: #111; color: var(--font-color); border: 1px solid var(--font-color); padding: 15px; cursor: pointer; }
-.calc-buttons button:hover { background: var(--font-color); color: #000; }
-canvas { background: #000; border: 1px solid var(--font-color); width: 100%; }
