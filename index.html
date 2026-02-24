@@ -3,69 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Custom Clock</title>
+    <title>Advanced Digital Clock</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto+Mono:wght@400;700&family=Share+Tech+Mono&family=Courier+Prime&family=VT323&family=Lobster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto+Mono&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Video Background Layers -->
     <div id="video-bg-container"></div>
-    <div id="youtube-bg-container"></div>
-    <div id="bg-overlay"></div>
+    <div id="overlay"></div>
 
-    <div id="clock-container">
-        <div id="clock-display">00:00:00</div>
+    <div class="top-controls">
+        <button id="study-btn" class="icon-btn">📚 Study Tools</button>
+        <button id="menu-toggle" class="icon-btn">⚙️ FX & Settings</button>
     </div>
 
-    <!-- Toggle Gear -->
-    <button id="menu-toggle" aria-label="Settings">⚙️</button>
+    <!-- Clock Wrapper for Reflection -->
+    <div id="clock-wrapper">
+        <div id="clock-display" class="clock-content">00:00:00</div>
+        <div id="clock-reflect" class="clock-content reflect">00:00:00</div>
+    </div>
 
-    <div id="settings-panel" class="hidden">
-        <h3>Clock Settings</h3>
+    <!-- SVG Water Filter -->
+    <svg style="display: none;">
+        <filter id="water-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="1" result="warp" id="turbulence">
+                <animate attributeName="baseFrequency" dur="10s" values="0.01 0.1;0.01 0.15;0.01 0.1" repeatCount="indefinite" />
+            </feTurbulence>
+            <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="10" in="SourceGraphic" in2="warp" />
+        </filter>
+    </svg>
+
+    <div id="settings-sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h3>Visual Effects</h3>
+            <button id="close-menu">×</button>
+        </div>
         
         <div class="setting-group">
-            <label>Font Family</label>
+            <label>Glow Intensity</label>
+            <input type="range" id="glow-slider" min="0" max="40" value="15">
+        </div>
+
+        <div class="setting-group">
+            <label>Reflection Opacity</label>
+            <input type="range" id="reflect-opacity" min="0" max="100" value="50">
+        </div>
+
+        <div class="setting-group">
+            <label>Water Intensity (Waves)</label>
+            <input type="range" id="wave-slider" min="0" max="100" value="20">
+        </div>
+
+        <hr>
+
+        <div class="setting-group">
+            <label>Font & Color</label>
             <select id="font-family">
-                <option value="'Orbitron', sans-serif">Orbitron (Digital)</option>
-                <option value="'VT323', monospace">Retro Arcade</option>
-                <option value="'Share Tech Mono', monospace">Share Tech</option>
-                <option value="'Roboto Mono', monospace">Roboto Mono</option>
-                <option value="'Lobster', cursive">Lobster (Fancy)</option>
+                <option value="'Orbitron', sans-serif">Orbitron</option>
+                <option value="'Share Tech Mono', monospace">Digital</option>
+                <option value="'Roboto Mono', monospace">Modern</option>
             </select>
-        </div>
-
-        <div class="setting-group">
-            <label>Font Size (<span id="size-val">80</span>px)</label>
-            <input type="range" id="font-size" min="20" max="300" value="80">
-        </div>
-
-        <div class="setting-group">
-            <label>Text Color</label>
             <input type="color" id="font-color" value="#ffffff">
         </div>
 
         <div class="setting-group">
-            <label>Background Color (Fallback)</label>
-            <input type="color" id="bg-color" value="#121212">
+            <label>Background Type</label>
+            <select id="bg-type">
+                <option value="color">Solid Color</option>
+                <option value="youtube">YouTube URL</option>
+                <option value="video">Direct Video URL</option>
+            </select>
+            <input type="text" id="bg-val" placeholder="URL or Hex">
         </div>
 
-        <div class="setting-group">
-            <label>YouTube Video ID</label>
-            <input type="text" id="yt-id" placeholder="e.g. jfKfPfyJRdk">
-            <small>Paste the ID from after "v=" in the URL</small>
-        </div>
+        <button id="apply-bg" class="apply-btn">Apply Background</button>
+    </div>
 
-        <div class="setting-group">
-            <label>Video URL (Direct MP4)</label>
-            <input type="text" id="video-url" placeholder="https://example.com/video.mp4">
+    <!-- (Study Modal code remains same as previous version) -->
+    <div id="study-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Study Suite</h2>
+                <button id="close-study">×</button>
+            </div>
+            <div class="tool-grid">
+                <div class="tool-card calculator theme-aware">
+                    <h3>Calculator</h3>
+                    <input type="text" id="calc-screen" readonly>
+                    <div class="calc-buttons">
+                        <button onclick="calc('7')">7</button><button onclick="calc('8')">8</button><button onclick="calc('9')">9</button><button onclick="calc('/')">/</button>
+                        <button onclick="calc('4')">4</button><button onclick="calc('5')">5</button><button onclick="calc('6')">6</button><button onclick="calc('*')">*</button>
+                        <button onclick="calc('1')">1</button><button onclick="calc('2')">2</button><button onclick="calc('3')">3</button><button onclick="calc('-')">-</button>
+                        <button onclick="calc('0')">0</button><button onclick="calc('.')">.</button><button onclick="calculate()">=</button><button onclick="clearCalc()">C</button>
+                    </div>
+                </div>
+                <div class="tool-card grapher theme-aware">
+                    <h3>Graphing (y = f(x))</h3>
+                    <input type="text" id="graph-input" placeholder="e.g., Math.sin(x)" value="Math.sin(x)">
+                    <canvas id="graph-canvas"></canvas>
+                </div>
+            </div>
         </div>
-
-        <div class="setting-group">
-            <label>Background Dim (Overlay)</label>
-            <input type="range" id="bg-dim" min="0" max="100" value="30">
-        </div>
-
-        <button id="reset-btn">Reset Defaults</button>
     </div>
 
     <script src="script.js"></script>
