@@ -1,8 +1,7 @@
 :root {
-    --bg-color: #0a0a0a;
     --font-color: #00f2ff;
-    --glow: 10px;
-    --wave-scale: 10;
+    --bg-color: #050505;
+    --glow: 20px;
 }
 
 body {
@@ -14,61 +13,79 @@ body {
     overflow: hidden;
 }
 
-#clock-wrapper {
-    text-align: center;
-    position: relative;
-    /* The Reflection Engine */
-    -webkit-box-reflect: below -20px linear-gradient(transparent, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.5));
+/* Background Layers */
+#video-bg-container { position: fixed; inset: 0; z-index: -2; }
+#overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: -1; }
+iframe, video { width: 100%; height: 100%; object-fit: cover; border: none; }
+
+/* Compact Top-Right Controls */
+.top-controls {
+    position: fixed; top: 15px; right: 15px;
+    display: flex; flex-direction: column; gap: 10px; z-index: 1000;
 }
 
-#clock-display {
-    font-size: 120px;
-    color: var(--font-color);
-    text-shadow: 0 0 var(--glow) var(--font-color);
-    filter: url(#water-filter); /* Apply the ripples */
-}
-
-/* Glass UI Components */
 .glass-btn {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.6);
     border: 1px solid var(--font-color);
     color: var(--font-color);
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all 0.2s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    padding: 8px 15px; border-radius: 5px;
+    cursor: pointer; backdrop-filter: blur(10px);
+    transition: 0.3s; font-size: 0.85rem;
 }
 .glass-btn:hover {
-    background: var(--font-color);
-    color: black;
+    background: var(--font-color); color: #000;
     box-shadow: 0 0 15px var(--font-color);
 }
 
+/* Clock & Reflection */
+#clock-wrapper {
+    text-align: center;
+    -webkit-box-reflect: below -20px linear-gradient(transparent, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.4));
+}
+#clock-display {
+    font-size: 130px;
+    color: var(--font-color);
+    text-shadow: 0 0 var(--glow) var(--font-color);
+    filter: url(#water-filter);
+    font-weight: bold;
+}
+
+/* Sidebar */
 .sidebar {
     position: fixed; right: -350px; top: 0; width: 300px; height: 100%;
-    background: rgba(0,0,0,0.9); border-left: 1px solid var(--font-color);
-    padding: 30px; transition: 0.4s; z-index: 100;
+    background: rgba(0,0,0,0.95); border-left: 2px solid var(--font-color);
+    padding: 30px; transition: 0.4s; z-index: 2000;
 }
 .sidebar.active { right: 0; }
-
-.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; }
-.modal-content {
-    max-width: 900px; margin: 50px auto; border: 1px solid var(--font-color);
-    background: #111; padding: 30px; border-radius: 12px;
-}
-
+.setting-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
 .color-picker-row { display: flex; gap: 10px; }
-input[type="text"] {
-    background: #222; border: 1px solid #444; color: white; padding: 8px; border-radius: 4px;
+input[type="text"], select {
+    background: #111; border: 1px solid #333; color: white; padding: 8px; border-radius: 4px;
 }
 
-/* Calculator & Graph Grid */
-.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 20px; }
-.tool-card { border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; }
-.calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
-.calc-buttons button { padding: 12px; background: #222; border: 1px solid #444; color: white; cursor: pointer; }
-.calc-buttons button:hover { border-color: var(--font-color); color: var(--font-color); }
-#graph-canvas { width: 100%; border: 1px solid var(--font-color); margin-top: 10px; background: #000; }
+/* Study Modal (Black & Theme Color) */
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 3000; }
+.modal-content {
+    max-width: 900px; margin: 50px auto; 
+    background: #000; border: 2px solid var(--font-color);
+    padding: 30px; border-radius: 15px; box-shadow: 0 0 40px rgba(0,0,0,1);
+}
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.tool-card { background: #080808; border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 10px; }
+
+/* Theme-Reactive Calculator */
+#calc-screen {
+    width: 100%; padding: 15px; box-sizing: border-box; margin-bottom: 10px;
+    background: #000; border: 1px solid var(--font-color); color: var(--font-color); font-size: 1.2rem;
+}
+.calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.calc-buttons button {
+    padding: 15px; background: #111; border: 1px solid var(--font-color);
+    color: var(--font-color); cursor: pointer; transition: 0.2s;
+}
+.calc-buttons button:hover { background: var(--font-color); color: #000; }
+.primary-calc { background: var(--font-color) !important; color: #000 !important; }
+
+/* Grapher */
+#graph-canvas { width: 100%; background: #000; border: 1px solid var(--font-color); margin-top: 10px; }
+#graph-input { width: 100%; padding: 10px; box-sizing: border-box; background: #111; border: 1px solid var(--font-color); color: white; }
