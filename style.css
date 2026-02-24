@@ -1,52 +1,74 @@
 :root {
-    --bg-color: #121212;
-    --font-color: #ffffff;
-    --glow-blur: 15px;
-    --reflect-alpha: 0.5;
-    --font-family: 'Orbitron', sans-serif;
+    --bg-color: #0a0a0a;
+    --font-color: #00f2ff;
+    --glow: 10px;
+    --wave-scale: 10;
 }
 
 body {
     margin: 0; padding: 0; height: 100vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background-color: var(--bg-color); color: var(--font-color);
-    font-family: sans-serif; overflow: hidden;
+    background-color: var(--bg-color);
+    color: var(--font-color);
+    font-family: 'Orbitron', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
 }
 
 #clock-wrapper {
-    display: flex; flex-direction: column; align-items: center; position: relative;
+    text-align: center;
+    position: relative;
+    /* The Reflection Engine */
+    -webkit-box-reflect: below -20px linear-gradient(transparent, rgba(0,0,0,0.2) 20%, rgba(0,0,0,0.5));
 }
 
-.clock-content {
-    font-size: 120px; font-family: var(--font-family);
+#clock-display {
+    font-size: 120px;
     color: var(--font-color);
-    text-shadow: 0 0 var(--glow-blur) var(--font-color);
-    transition: 0.2s;
+    text-shadow: 0 0 var(--glow) var(--font-color);
+    filter: url(#water-filter); /* Apply the ripples */
 }
 
-/* Reflection Style */
-.reflect {
-    transform: scaleY(-1);
-    opacity: var(--reflect-alpha);
-    mask-image: linear-gradient(to top, rgba(0,0,0,0) 10%, rgba(0,0,0,1) 90%);
-    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 10%, rgba(0,0,0,1) 90%);
-    filter: url(#water-filter);
-    margin-top: -10px;
+/* Glass UI Components */
+.glass-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--font-color);
+    color: var(--font-color);
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.glass-btn:hover {
+    background: var(--font-color);
+    color: black;
+    box-shadow: 0 0 15px var(--font-color);
 }
 
-/* UI & Sidebar Improvements */
 .sidebar {
-    position: fixed; top: 0; right: -350px; width: 300px; height: 100%;
-    background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
-    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; padding: 25px;
-    color: white; border-left: 1px solid rgba(255,255,255,0.1);
+    position: fixed; right: -350px; top: 0; width: 300px; height: 100%;
+    background: rgba(0,0,0,0.9); border-left: 1px solid var(--font-color);
+    padding: 30px; transition: 0.4s; z-index: 100;
 }
 .sidebar.active { right: 0; }
-.setting-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
-.apply-btn { width: 100%; padding: 12px; background: var(--font-color); color: var(--bg-color); border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
-/* Modal and Background logic remains consistent with previous version */
-#video-bg-container { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-2; }
-#overlay { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; background: rgba(0,0,0,0.4); }
-#study-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: rgba(0,0,0,0.9); }
-.modal-content { max-width: 900px; margin: 50px auto; padding: 20px; border: 1px solid var(--font-color); }
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; }
+.modal-content {
+    max-width: 900px; margin: 50px auto; border: 1px solid var(--font-color);
+    background: #111; padding: 30px; border-radius: 12px;
+}
+
+.color-picker-row { display: flex; gap: 10px; }
+input[type="text"] {
+    background: #222; border: 1px solid #444; color: white; padding: 8px; border-radius: 4px;
+}
+
+/* Calculator & Graph Grid */
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-top: 20px; }
+.tool-card { border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; }
+.calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 15px; }
+.calc-buttons button { padding: 12px; background: #222; border: 1px solid #444; color: white; cursor: pointer; }
+.calc-buttons button:hover { border-color: var(--font-color); color: var(--font-color); }
+#graph-canvas { width: 100%; border: 1px solid var(--font-color); margin-top: 10px; background: #000; }
