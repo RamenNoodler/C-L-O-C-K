@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Digital Clock</title>
+    <title>Clock</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto+Mono&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
@@ -12,73 +12,63 @@
     <div id="overlay"></div>
 
     <div class="top-controls">
-        <button id="study-btn" class="icon-btn">📚 Study Tools</button>
-        <button id="menu-toggle" class="icon-btn">⚙️ FX & Settings</button>
+        <button id="study-btn" class="glass-btn">📚 Study Tools</button>
+        <button id="menu-toggle" class="glass-btn">⚙️ Settings</button>
     </div>
 
-    <!-- Clock Wrapper for Reflection -->
     <div id="clock-wrapper">
-        <div id="clock-display" class="clock-content">00:00:00</div>
-        <div id="clock-reflect" class="clock-content reflect">00:00:00</div>
+        <div id="clock-display">00:00:00</div>
+        <!-- SVG Filter for Water Ripple -->
+        <svg style="display:none">
+            <filter id="water-filter">
+                <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="10" id="wave-intensity-map" />
+            </filter>
+        </svg>
     </div>
-
-    <!-- SVG Water Filter -->
-    <svg style="display: none;">
-        <filter id="water-filter">
-            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="1" result="warp" id="turbulence">
-                <animate attributeName="baseFrequency" dur="10s" values="0.01 0.1;0.01 0.15;0.01 0.1" repeatCount="indefinite" />
-            </feTurbulence>
-            <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="10" in="SourceGraphic" in2="warp" />
-        </filter>
-    </svg>
 
     <div id="settings-sidebar" class="sidebar">
         <div class="sidebar-header">
-            <h3>Visual Effects</h3>
+            <h3>Customization</h3>
             <button id="close-menu">×</button>
         </div>
         
         <div class="setting-group">
+            <label>Font Color (Hex)</label>
+            <div class="color-picker-row">
+                <input type="color" id="font-color-pk">
+                <input type="text" id="font-color-hex" placeholder="#FFFFFF">
+            </div>
+        </div>
+
+        <div class="setting-group">
             <label>Glow Intensity</label>
-            <input type="range" id="glow-slider" min="0" max="40" value="15">
+            <input type="range" id="glow-slider" min="0" max="40" value="10">
         </div>
 
         <div class="setting-group">
-            <label>Reflection Opacity</label>
-            <input type="range" id="reflect-opacity" min="0" max="100" value="50">
+            <label>Reflection & Waves</label>
+            <div class="toggle-row">
+                <span>Enable:</span> <input type="checkbox" id="reflect-toggle" checked>
+            </div>
+            <label>Wave Intensity</label>
+            <input type="range" id="wave-slider" min="0" max="50" value="10">
         </div>
 
         <div class="setting-group">
-            <label>Water Intensity (Waves)</label>
-            <input type="range" id="wave-slider" min="0" max="100" value="20">
-        </div>
-
-        <hr>
-
-        <div class="setting-group">
-            <label>Font & Color</label>
-            <select id="font-family">
-                <option value="'Orbitron', sans-serif">Orbitron</option>
-                <option value="'Share Tech Mono', monospace">Digital</option>
-                <option value="'Roboto Mono', monospace">Modern</option>
-            </select>
-            <input type="color" id="font-color" value="#ffffff">
-        </div>
-
-        <div class="setting-group">
-            <label>Background Type</label>
+            <label>Background</label>
             <select id="bg-type">
-                <option value="color">Solid Color</option>
-                <option value="youtube">YouTube URL</option>
-                <option value="video">Direct Video URL</option>
+                <option value="color">Color</option>
+                <option value="youtube">YouTube</option>
+                <option value="video">Direct Video</option>
             </select>
-            <input type="text" id="bg-val" placeholder="URL or Hex">
+            <input type="text" id="bg-val" placeholder="Hex color or URL">
         </div>
 
-        <button id="apply-bg" class="apply-btn">Apply Background</button>
+        <button id="apply-btn" class="glass-btn primary">Save & Apply</button>
     </div>
 
-    <!-- (Study Modal code remains same as previous version) -->
+    <!-- Study Modal -->
     <div id="study-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -86,20 +76,20 @@
                 <button id="close-study">×</button>
             </div>
             <div class="tool-grid">
-                <div class="tool-card calculator theme-aware">
+                <div class="tool-card">
                     <h3>Calculator</h3>
-                    <input type="text" id="calc-screen" readonly>
+                    <input type="text" id="calc-screen" placeholder="Type here...">
                     <div class="calc-buttons">
                         <button onclick="calc('7')">7</button><button onclick="calc('8')">8</button><button onclick="calc('9')">9</button><button onclick="calc('/')">/</button>
                         <button onclick="calc('4')">4</button><button onclick="calc('5')">5</button><button onclick="calc('6')">6</button><button onclick="calc('*')">*</button>
                         <button onclick="calc('1')">1</button><button onclick="calc('2')">2</button><button onclick="calc('3')">3</button><button onclick="calc('-')">-</button>
-                        <button onclick="calc('0')">0</button><button onclick="calc('.')">.</button><button onclick="calculate()">=</button><button onclick="clearCalc()">C</button>
+                        <button onclick="calc('0')">0</button><button onclick="calc('.')">.</button><button onclick="calculate()" class="primary">=</button><button onclick="clearCalc()">C</button>
                     </div>
                 </div>
-                <div class="tool-card grapher theme-aware">
-                    <h3>Graphing (y = f(x))</h3>
-                    <input type="text" id="graph-input" placeholder="e.g., Math.sin(x)" value="Math.sin(x)">
-                    <canvas id="graph-canvas"></canvas>
+                <div class="tool-card">
+                    <h3>Grapher (y=...)</h3>
+                    <input type="text" id="graph-input" value="Math.sin(x) * 2">
+                    <canvas id="graph-canvas" width="400" height="250"></canvas>
                 </div>
             </div>
         </div>
