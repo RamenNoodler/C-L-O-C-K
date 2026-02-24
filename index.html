@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customizable Digital Clock</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for customization options -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&family=Roboto+Mono:wght@400;700&family=Share+Tech+Mono&family=Courier+Prime&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="clock-container">
+        <div id="clock-display">00:00:00</div>
+    </div>
+
+    <div id="settings-panel">
+        <h3>Clock Settings</h3>
+        
+        <label>Font family</label>
+        <select id="font-family">
+            <option value="'Orbitron', sans-serif">Orbitron (Digital)</option>
+            <option value="'Share Tech Mono', monospace">Share Tech</option>
+            <option value="'Roboto Mono', monospace">Roboto Mono</option>
+            <option value="'Courier Prime', monospace">Courier</option>
+            <option value="Arial, sans-serif">Arial</option>
+        </select>
+
+        <label>Font Size</label>
+        <input type="range" id="font-size" min="20" max="200" value="80">
+
+        <label>Font Color</label>
+        <input type="color" id="font-color" value="#ffffff">
+
+        <label>Background Color</label>
+        <input type="color" id="bg-color" value="#121212">
+
+        <button id="reset-btn">Reset Defaults</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
