@@ -12,35 +12,38 @@
     <div id="video-bg-container"></div>
     <div id="overlay"></div>
 
-    <!-- Top Right Controls -->
     <div class="top-controls">
         <button id="menu-toggle" class="glass-btn">⚙️ Settings</button>
         <button id="study-btn" class="glass-btn">📚 Study Suite</button>
+        <!-- Enhanced Weather Widget -->
         <div id="weather-widget" class="glass-card">
-            <div id="temp">--°C</div>
-            <div id="city-name">Select Location</div>
-            <div id="condition">Cloudy</div>
+            <div class="weather-main">
+                <span id="temp">--°C</span>
+                <span id="condition-label">Searching...</span>
+            </div>
+            <div id="city-display">Tap Map or Search</div>
+            <div class="weather-details">
+                <span id="feels-like">Feels like: --</span>
+                <span id="wind">Wind: -- km/h</span>
+            </div>
         </div>
     </div>
 
-    <!-- Clock & Reflection Setup -->
-    <div id="clock-wrapper">
+    <!-- Clock and Isolated Reflection -->
+    <div id="clock-container">
         <div id="clock-main">00:00:00</div>
-        
-        <div id="reflect-box">
+        <div id="reflect-wrap">
             <div id="clock-reflect">00:00:00</div>
         </div>
         
-        <!-- Wave Filter for Reflection Only -->
         <svg style="position: absolute; width: 0; height: 0;">
             <filter id="water-filter">
                 <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" id="wave-intensity-map" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="30" id="wave-intensity-map" />
             </filter>
         </svg>
     </div>
 
-    <!-- Settings Sidebar -->
     <div id="settings-sidebar" class="sidebar">
         <div class="sidebar-header">
             <h3>Configuration</h3>
@@ -48,47 +51,46 @@
         </div>
         
         <div class="setting-group">
-            <label>City Search (from Python logic)</label>
+            <label>City Search</label>
             <div class="search-row">
-                <input type="text" id="city-input" placeholder="Enter city (e.g. Phoenix)">
-                <button id="search-btn">Go</button>
+                <input type="text" id="city-input" placeholder="e.g. Anchorage">
+                <button id="search-btn">🔍</button>
             </div>
         </div>
 
         <div class="setting-group">
-            <label>Regional Weather Map</label>
+            <label>Weather Regions</label>
             <div id="map"></div>
         </div>
 
         <div class="setting-group">
-            <label>Theme & Visuals</label>
+            <label>Glow & Ripples</label>
             <div class="color-picker-row">
                 <input type="color" id="font-color-pk" value="#00f2ff">
                 <input type="text" id="font-color-hex" value="#00f2ff">
             </div>
             <div class="slider-row">
-                <span>Waves</span>
-                <input type="range" id="wave-slider" min="0" max="100" value="30">
+                <span>Wave Power</span>
+                <input type="range" id="wave-slider" min="0" max="150" value="40">
             </div>
         </div>
 
         <div class="setting-group">
-            <label>Background</label>
+            <label>Atmosphere (Background)</label>
             <select id="bg-type">
-                <option value="color">Solid Color</option>
-                <option value="youtube">YouTube URL</option>
+                <option value="color">Solid</option>
+                <option value="youtube">YouTube</option>
             </select>
-            <input type="text" id="bg-val" placeholder="Hex or URL">
+            <input type="text" id="bg-val" placeholder="hex/url">
         </div>
         <button id="apply-bg-btn" class="action-btn">Apply Changes</button>
     </div>
 
-    <!-- Study Modal -->
     <div id="study-modal" class="modal">
         <div class="modal-content">
             <div class="tool-grid">
                 <div class="tool-card">
-                    <h3>Calculator</h3>
+                    <h3>Scientific Calc</h3>
                     <input type="text" id="calc-screen" placeholder="0">
                     <div class="calc-buttons">
                         <button onclick="calc('7')">7</button><button onclick="calc('8')">8</button><button onclick="calc('9')">9</button><button onclick="calc('/')">/</button>
@@ -98,12 +100,12 @@
                     </div>
                 </div>
                 <div class="tool-card">
-                    <h3>Grapher</h3>
-                    <input type="text" id="graph-input" value="Math.sin(x)*2">
+                    <h3>Function Grapher</h3>
+                    <input type="text" id="graph-input" value="Math.cos(x)*3">
                     <canvas id="graph-canvas" width="400" height="200"></canvas>
                 </div>
             </div>
-            <button id="close-study" class="glass-btn" style="margin-top:20px">Close Suite</button>
+            <button id="close-study" class="glass-btn" style="margin-top:20px">Return to Clock</button>
         </div>
     </div>
 
