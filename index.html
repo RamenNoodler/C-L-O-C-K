@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glow & Live Reflect Clock</title>
+    <title>Atmospheric Study Clock</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
     <div id="video-bg-container"></div>
@@ -14,21 +15,26 @@
     <div class="top-controls">
         <button id="menu-toggle" class="glass-btn">⚙️ Settings</button>
         <button id="study-btn" class="glass-btn">📚 Study Suite</button>
+        <div id="weather-widget" class="glass-card">
+            <span id="temp">--°C</span>
+            <span id="condition">Location?</span>
+        </div>
     </div>
 
-    <!-- Clock System -->
-    <div id="clock-container">
-        <!-- Main Clock (Sharp) -->
-        <div id="clock-display" class="clock-text">00:00:00</div>
+    <!-- Clock & Reflection Engine -->
+    <div id="clock-wrapper">
+        <div id="clock-main">00:00:00</div>
         
-        <!-- Reflection Clock (Distorted) -->
-        <div id="clock-reflection" class="clock-text">00:00:00</div>
-
-        <!-- Wave Distortion Filter -->
+        <div id="reflection-area">
+            <div id="clock-reflection">00:00:00</div>
+        </div>
+        
+        <!-- SVG Filter for Waves -->
         <svg style="position: absolute; width: 0; height: 0;">
             <filter id="water-filter">
-                <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="15" id="wave-intensity-map" />
+                <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="1" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="25" id="wave-intensity-map" />
+                <feGaussianBlur stdDeviation="1" />
             </filter>
         </svg>
     </div>
@@ -43,60 +49,55 @@
         <div class="setting-group">
             <label>Font Color (Hex)</label>
             <div class="color-picker-row">
-                <input type="color" id="font-color-pk" value="#00f2ff">
-                <input type="text" id="font-color-hex" value="#00f2ff">
+                <input type="color" id="font-color-pk" value="#ff2d2d">
+                <input type="text" id="font-color-hex" value="#FF2D2D">
             </div>
         </div>
 
         <div class="setting-group">
-            <label>Glow Intensity</label>
-            <input type="range" id="glow-slider" min="0" max="80" value="20">
+            <label>Wave Intensity</label>
+            <input type="range" id="wave-slider" min="0" max="100" value="30">
         </div>
 
         <div class="setting-group">
-            <label>Wave Intensity (Reflection Only)</label>
-            <input type="range" id="wave-slider" min="0" max="100" value="25">
+            <label>Weather Location</label>
+            <div id="map"></div>
+            <p style="font-size: 10px; opacity: 0.6;">Click the map above to select city</p>
         </div>
 
         <div class="setting-group">
-            <label>Background</label>
-            <select id="bg-type">
-                <option value="color">Solid Color</option>
-                <option value="youtube">YouTube URL</option>
-            </select>
-            <input type="text" id="bg-val" placeholder="Color or URL">
+            <label>Background (YouTube)</label>
+            <input type="text" id="bg-val" placeholder="Paste YouTube Link">
+            <button id="apply-bg-btn" class="action-btn">Update TV</button>
         </div>
-
-        <button id="apply-bg-btn" class="action-btn">Apply Changes</button>
     </div>
 
     <!-- Study Modal -->
     <div id="study-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Study Tools</h2>
-                <button id="close-study">×</button>
-            </div>
             <div class="tool-grid">
-                <div class="tool-card">
+                <div class="tool-card calculator">
                     <h3>Calculator</h3>
                     <input type="text" id="calc-screen" placeholder="0">
                     <div class="calc-buttons">
                         <button onclick="calc('7')">7</button><button onclick="calc('8')">8</button><button onclick="calc('9')">9</button><button onclick="calc('/')">/</button>
                         <button onclick="calc('4')">4</button><button onclick="calc('5')">5</button><button onclick="calc('6')">6</button><button onclick="calc('*')">*</button>
                         <button onclick="calc('1')">1</button><button onclick="calc('2')">2</button><button onclick="calc('3')">3</button><button onclick="calc('-')">-</button>
-                        <button onclick="calc('0')">0</button><button onclick="calc('.')">.</button><button onclick="calculate()" class="primary-calc">=</button><button onclick="clearCalc()">C</button>
+                        <button onclick="calc('0')">0</button><button onclick="calculate()" class="primary-calc">=</button><button onclick="clearCalc()">C</button>
                     </div>
                 </div>
-                <div class="tool-card">
-                    <h3>Grapher (y=...)</h3>
-                    <input type="text" id="graph-input" value="Math.sin(x) * 2">
-                    <canvas id="graph-canvas" width="400" height="250"></canvas>
+                <!-- Graphing Section -->
+                <div class="tool-card grapher">
+                    <h3>Grapher (Desmos-Style)</h3>
+                    <input type="text" id="graph-input" value="Math.sin(x)*2" placeholder="e.g. x*x">
+                    <canvas id="graph-canvas" width="400" height="240"></canvas>
                 </div>
             </div>
+            <button id="close-study" class="glass-btn" style="margin-top: 20px; width: 100%;">Return to Clock</button>
         </div>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
