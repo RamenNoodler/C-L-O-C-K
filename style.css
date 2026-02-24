@@ -1,63 +1,52 @@
 :root {
     --bg-color: #121212;
     --font-color: #ffffff;
-    --font-size: 80px;
+    --glow-blur: 15px;
+    --reflect-alpha: 0.5;
     --font-family: 'Orbitron', sans-serif;
-    --overlay-opacity: 0.3;
 }
 
-body, html {
-    margin: 0; padding: 0; width: 100%; height: 100%;
-    overflow: hidden; 
-    background-color: var(--bg-color);
+body {
+    margin: 0; padding: 0; height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background-color: var(--bg-color); color: var(--font-color);
+    font-family: sans-serif; overflow: hidden;
 }
 
-/* Background Systems */
-#video-bg-container, #youtube-bg-container, #bg-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+#clock-wrapper {
+    display: flex; flex-direction: column; align-items: center; position: relative;
 }
 
-#bg-overlay {
-    background: black;
-    opacity: var(--overlay-opacity);
-    z-index: 0;
-}
-
-video { object-fit: cover; width: 100%; height: 100%; }
-iframe { pointer-events: none; width: 100vw; height: 56.25vw; min-height: 100vh; min-width: 177.77vh; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-
-#clock-container {
-    height: 100vh; display: flex; align-items: center; justify-content: center;
-    position: relative; z-index: 1;
-}
-
-#clock-display {
-    font-size: var(--font-size);
-    font-family: var(--font-family);
+.clock-content {
+    font-size: 120px; font-family: var(--font-family);
     color: var(--font-color);
-    text-shadow: 0 0 20px rgba(0,0,0,0.5);
-    transition: all 0.2s ease;
+    text-shadow: 0 0 var(--glow-blur) var(--font-color);
+    transition: 0.2s;
 }
 
-/* UI Elements */
-#menu-toggle {
-    position: fixed; top: 20px; right: 20px; z-index: 100;
-    font-size: 24px; background: rgba(255,255,255,0.1); border: none;
-    border-radius: 50%; width: 45px; height: 45px; cursor: pointer;
-    backdrop-filter: blur(5px); color: white;
+/* Reflection Style */
+.reflect {
+    transform: scaleY(-1);
+    opacity: var(--reflect-alpha);
+    mask-image: linear-gradient(to top, rgba(0,0,0,0) 10%, rgba(0,0,0,1) 90%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 10%, rgba(0,0,0,1) 90%);
+    filter: url(#water-filter);
+    margin-top: -10px;
 }
 
-#settings-panel {
-    position: fixed; top: 75px; right: 20px; z-index: 99;
-    background: rgba(0, 0, 0, 0.85); padding: 20px; border-radius: 12px;
-    width: 280px; max-height: 80vh; overflow-y: auto;
-    color: white; border: 1px solid rgba(255,255,255,0.1);
-    transition: transform 0.3s ease, opacity 0.3s ease;
+/* UI & Sidebar Improvements */
+.sidebar {
+    position: fixed; top: 0; right: -350px; width: 300px; height: 100%;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(20px);
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; padding: 25px;
+    color: white; border-left: 1px solid rgba(255,255,255,0.1);
 }
+.sidebar.active { right: 0; }
+.setting-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
+.apply-btn { width: 100%; padding: 12px; background: var(--font-color); color: var(--bg-color); border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
-#settings-panel.hidden { transform: translateX(350px); opacity: 0; }
-
-.setting-group { margin-bottom: 15px; display: flex; flex-direction: column; }
-label { font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; opacity: 0.7; }
-input[type="text"], select { padding: 8px; background: #222; border: 1px solid #444; color: white; border-radius: 4px; }
-button { padding: 10px; cursor: pointer; background: #cc0000; color: white; border: none; border-radius: 4px; margin-top: 10px; }
+/* Modal and Background logic remains consistent with previous version */
+#video-bg-container { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-2; }
+#overlay { position: fixed; top:0; left:0; width:100%; height:100%; z-index:-1; background: rgba(0,0,0,0.4); }
+#study-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 2000; background: rgba(0,0,0,0.9); }
+.modal-content { max-width: 900px; margin: 50px auto; padding: 20px; border: 1px solid var(--font-color); }
