@@ -9,103 +9,74 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
-    <div id="video-bg-container"></div>
-    <div id="overlay"></div>
-
+    <div id="app-bg"></div>
+    
     <div class="top-controls">
         <button id="menu-toggle" class="glass-btn">⚙️ Settings</button>
-        <button id="study-btn" class="glass-btn">📚 Study Suite</button>
-        <!-- Enhanced Weather Widget -->
-        <div id="weather-widget" class="glass-card">
-            <div class="weather-main">
-                <span id="temp">--°C</span>
-                <span id="condition-label">Searching...</span>
-            </div>
-            <div id="city-display">Tap Map or Search</div>
-            <div class="weather-details">
-                <span id="feels-like">Feels like: --</span>
-                <span id="wind">Wind: -- km/h</span>
+        <div id="weather-now" class="glass-card">
+            <div id="city-name">SELECT A LOCATION</div>
+            <div class="temp-row">
+                <span id="current-temp">--°</span>
+                <span id="current-desc">WAITING</span>
             </div>
         </div>
     </div>
 
-    <!-- Clock and Isolated Reflection -->
-    <div id="clock-container">
-        <div id="clock-main">00:00:00</div>
-        <div id="reflect-wrap">
-            <div id="clock-reflect">00:00:00</div>
+    <div id="clock-stage">
+        <div id="clock-main" class="txt-solid">00:00:00</div>
+        <div id="reflect-area">
+            <div id="clock-reflect" class="txt-solid">00:00:00</div>
         </div>
-        
-        <svg style="position: absolute; width: 0; height: 0;">
-            <filter id="water-filter">
-                <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="30" id="wave-intensity-map" />
-            </filter>
-        </svg>
     </div>
+
+    <!-- 7-DAY FORECAST BAR -->
+    <div id="forecast-container">
+        <div class="forecast-title">7-DAY GEOGRAPHIC FORECAST</div>
+        <div id="weekly-strip">
+            <!-- JS will inject 7 cards here -->
+        </div>
+    </div>
+
+    <svg style="position: absolute; width: 0; height: 0;">
+        <filter id="water-filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="40" id="wave-intensity-map" />
+        </filter>
+    </svg>
 
     <div id="settings-sidebar" class="sidebar">
         <div class="sidebar-header">
-            <h3>Configuration</h3>
+            <h3>Customization</h3>
             <button id="close-menu">×</button>
         </div>
-        
+
+        <div class="setting-group">
+            <label>Text Style</label>
+            <select id="text-style-select">
+                <option value="txt-solid">Solid Glow</option>
+                <option value="txt-red-yellow">Red to Yellow Gradient</option>
+                <option value="txt-rainbow">Animated Rainbow</option>
+                <option value="txt-bw">Monochrome (B&W)</option>
+            </select>
+        </div>
+
+        <div class="setting-group">
+            <label>Background Color</label>
+            <input type="color" id="bg-color-pk" value="#000000">
+        </div>
+
+        <div class="setting-group">
+            <label>Main Theme Color</label>
+            <input type="color" id="theme-pk" value="#00f2ff">
+        </div>
+
         <div class="setting-group">
             <label>City Search</label>
-            <div class="search-row">
-                <input type="text" id="city-input" placeholder="e.g. Anchorage">
+            <div class="search-box">
+                <input type="text" id="city-input" placeholder="Search (Alaska, AZ...)">
                 <button id="search-btn">🔍</button>
             </div>
-        </div>
-
-        <div class="setting-group">
-            <label>Weather Regions</label>
             <div id="map"></div>
-        </div>
-
-        <div class="setting-group">
-            <label>Glow & Ripples</label>
-            <div class="color-picker-row">
-                <input type="color" id="font-color-pk" value="#00f2ff">
-                <input type="text" id="font-color-hex" value="#00f2ff">
-            </div>
-            <div class="slider-row">
-                <span>Wave Power</span>
-                <input type="range" id="wave-slider" min="0" max="150" value="40">
-            </div>
-        </div>
-
-        <div class="setting-group">
-            <label>Atmosphere (Background)</label>
-            <select id="bg-type">
-                <option value="color">Solid</option>
-                <option value="youtube">YouTube</option>
-            </select>
-            <input type="text" id="bg-val" placeholder="hex/url">
-        </div>
-        <button id="apply-bg-btn" class="action-btn">Apply Changes</button>
-    </div>
-
-    <div id="study-modal" class="modal">
-        <div class="modal-content">
-            <div class="tool-grid">
-                <div class="tool-card">
-                    <h3>Scientific Calc</h3>
-                    <input type="text" id="calc-screen" placeholder="0">
-                    <div class="calc-buttons">
-                        <button onclick="calc('7')">7</button><button onclick="calc('8')">8</button><button onclick="calc('9')">9</button><button onclick="calc('/')">/</button>
-                        <button onclick="calc('4')">4</button><button onclick="calc('5')">5</button><button onclick="calc('6')">6</button><button onclick="calc('*')">*</button>
-                        <button onclick="calc('1')">1</button><button onclick="calc('2')">2</button><button onclick="calc('3')">3</button><button onclick="calc('-')">-</button>
-                        <button onclick="calc('0')">0</button><button onclick="calculate()" class="primary-calc">=</button>
-                    </div>
-                </div>
-                <div class="tool-card">
-                    <h3>Function Grapher</h3>
-                    <input type="text" id="graph-input" value="Math.cos(x)*3">
-                    <canvas id="graph-canvas" width="400" height="200"></canvas>
-                </div>
-            </div>
-            <button id="close-study" class="glass-btn" style="margin-top:20px">Return to Clock</button>
         </div>
     </div>
 
