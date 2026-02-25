@@ -63,25 +63,4 @@ body {
 
 /* SIDEBAR */
 .sidebar { 
-    position: fixed; right: -360px; top: 0; width: 320px; height: 100%; 
-    background: #000; border-left: 1px solid var(--g1); padding: 30px; transition: 0.4s; z-index: 2000; overflow-y: auto;
-}
-.sidebar.active { right: 0; }
-.setting-item { margin-bottom: 25px; }
-.setting-item label { font-size: 0.7rem; color: var(--g1); display: block; margin-bottom: 10px; letter-spacing: 1px; }
-.toggle-row { display: flex; gap: 5px; }
-.toggle-row button { flex: 1; background: #111; border: 1px solid #333; color: #fff; padding: 10px; cursor: pointer; font-family: 'Orbitron'; font-size: 0.7rem; }
-.toggle-row button.active { border-color: var(--g1); background: rgba(255,255,255,0.1); }
-#map { height: 220px; width: 100%; border: 1px solid #222; margin-top: 10px; border-radius: 4px; }
-
-/* Add some spacing to the sliders and labels */
-.setting-item {
-    margin-bottom: 25px;
-}
-.setting-item label {
-    font-size: 0.7rem;
-    color: var(--g1);
-    display: block;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-}
+    position: fixed; right: -360px; top: 0; width: 320px; height: 
