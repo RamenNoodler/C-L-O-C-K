@@ -123,6 +123,54 @@ document.getElementById('wave-speed').oninput = (e) => {
     waveSpeed = parseFloat(e.target.value);  // Update wave speed (0.001 to 0.05)
 };
 
+// === REAL WATER WAVE REFLECTION ===
+
+const canvas = document.getElementById("reflection-canvas");
+const ctx = canvas.getContext("2d");
+
+let wavePhase = 0;
+let waveIntensity = 10;  // can connect to slider
+let waveSpeed = 0.05;
+
+function resizeCanvas() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+function drawReflection() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const text = document.getElementById("clock-digits").innerText;
+    const fontSize = canvas.height * 0.8;
+
+    ctx.save();
+    ctx.translate(canvas.width / 2, 0);
+    ctx.scale(1, -1);
+
+    ctx.font = `900 ${fontSize}px Orbitron`;
+    ctx.textAlign = "center";
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, -fontSize);
+    gradient.addColorStop(0, getComputedStyle(document.documentElement).getPropertyValue('--g1'));
+    gradient.addColorStop(1, getComputedStyle(document.documentElement).getPropertyValue('--g2'));
+
+    ctx.fillStyle = gradient;
+
+    for (let y = 0; y < canvas.height; y++) {
+        const distortion = Math.sin((y * 0.05) + wavePhase) * waveIntensity;
+        ctx.fillText(text, distortion, -y);
+    }
+
+    ctx.restore();
+
+    wavePhase += waveSpeed;
+    requestAnimationFrame(drawReflection);
+}
+
+drawReflection();
+
 // 7. Leaflet Geographic Map
 let map = L.map('map').setView([44.0, -120.0], 4);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
