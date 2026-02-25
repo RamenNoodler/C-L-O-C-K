@@ -4,82 +4,97 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atmospheric Study Clock</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app-bg"></div>
-    
-    <div class="top-controls">
-        <button id="menu-toggle" class="glass-btn">⚙️ Settings</button>
-        <div id="weather-now" class="glass-card">
-            <div id="city-name">SELECT A LOCATION</div>
-            <div class="temp-row">
-                <span id="current-temp">--°</span>
-                <span id="current-desc">WAITING</span>
+    <!-- LAYER 1: YOUTUBE VIDEO -->
+    <div id="video-container">
+        <div id="player"></div>
+    </div>
+
+    <!-- LAYER 2: COLOR TINT OVERLAY -->
+    <div id="app-bg-overlay"></div>
+
+    <!-- LAYER 3: APP UI -->
+    <header class="hud-top">
+        <div id="weather-widget" class="glass-ui theme-border">
+            <div id="city-label" class="mini-tag">SYSTEM IDLE</div>
+            <div class="main-stats">
+                <span id="temp-val" class="grad-text">--</span>
+                <span id="unit-val">°F</span>
+                <span id="cond-tag" class="theme-bg">STBY</span>
             </div>
         </div>
-    </div>
+        <button id="sidebar-toggle" class="glass-btn theme-border">⚙️ SETTINGS</button>
+    </header>
 
-    <div id="clock-stage">
-        <div id="clock-main" class="txt-solid">00:00:00</div>
-        <div id="reflect-area">
-            <div id="clock-reflect" class="txt-solid">00:00:00</div>
+    <main id="clock-stage">
+        <div id="clock-digits" class="grad-text">00:00:00</div>
+        <div id="reflection-container">
+            <div id="clock-reflection" class="grad-text">00:00:00</div>
         </div>
-    </div>
+    </main>
 
-    <!-- 7-DAY FORECAST BAR -->
-    <div id="forecast-container">
-        <div class="forecast-title">7-DAY GEOGRAPHIC FORECAST</div>
-        <div id="weekly-strip">
-            <!-- JS will inject 7 cards here -->
-        </div>
-    </div>
+    <footer id="forecast-bar" class="theme-border-top">
+        <div class="forecast-header">7-DAY GEOGRAPHIC PROJECTION</div>
+        <div id="forecast-container"></div>
+    </footer>
 
-    <svg style="position: absolute; width: 0; height: 0;">
-        <filter id="water-filter">
+    <svg style="display:none">
+        <filter id="ripple-filter">
             <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="40" id="wave-intensity-map" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="45" id="wave-scale" />
         </filter>
     </svg>
 
-    <div id="settings-sidebar" class="sidebar">
+    <aside id="settings-sidebar" class="sidebar">
         <div class="sidebar-header">
-            <h3>Customization</h3>
-            <button id="close-menu">×</button>
+            <h3>LOGISTICS</h3>
+            <button id="close-sidebar">×</button>
         </div>
 
-        <div class="setting-group">
-            <label>Text Style</label>
-            <select id="text-style-select">
-                <option value="txt-solid">Solid Glow</option>
-                <option value="txt-red-yellow">Red to Yellow Gradient</option>
-                <option value="txt-rainbow">Animated Rainbow</option>
-                <option value="txt-bw">Monochrome (B&W)</option>
-            </select>
+        <div class="setting-item">
+            <label>YouTube Video ID</label>
+            <input type="text" id="yt-id-field" placeholder="e.g. jfKfPfyJRdk" value="jfKfPfyJRdk">
+            <small>Find a video on YT and paste the ID here.</small>
         </div>
 
-        <div class="setting-group">
-            <label>Background Color</label>
-            <input type="color" id="bg-color-pk" value="#000000">
+        <div class="setting-item">
+            <label>Weather API Key (OpenWeather)</label>
+            <input type="password" id="api-field" placeholder="Paste Key Here...">
         </div>
 
-        <div class="setting-group">
-            <label>Main Theme Color</label>
-            <input type="color" id="theme-pk" value="#00f2ff">
-        </div>
-
-        <div class="setting-group">
-            <label>City Search</label>
-            <div class="search-box">
-                <input type="text" id="city-input" placeholder="Search (Alaska, AZ...)">
-                <button id="search-btn">🔍</button>
+        <div class="setting-item">
+            <label>Temperature Units</label>
+            <div class="toggle-row">
+                <button id="btn-c">Celsius</button>
+                <button id="btn-f" class="active">Fahrenheit</button>
             </div>
+        </div>
+
+        <div class="setting-item">
+            <label>Clock Gradient (Top/Bottom)</label>
+            <div class="picker-row">
+                <input type="color" id="grad-start" value="#00f2ff">
+                <span>→</span>
+                <input type="color" id="grad-end" value="#7000ff">
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <label>Overlay Tint / Background</label>
+            <input type="color" id="bg-picker" value="#000000">
+        </div>
+
+        <div class="setting-item">
+            <label>Location Search</label>
             <div id="map"></div>
         </div>
-    </div>
+    </aside>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
