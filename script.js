@@ -24,7 +24,25 @@ function animateWaves() {
 }
 animateWaves();
 
-// 3. Meteorological Engine (Supports OWM Hardcode)
+// 3. Test API to Check If It's Working
+async function testAPI() {
+    const testUrl = `https://api.openweathermap.org/data/2.5/weather?lat=37.7749&lon=-122.4194&appid=${OWM_API_KEY}&units=imperial`; // San Francisco coordinates
+    try {
+        const res = await fetch(testUrl);
+        const data = await res.json();
+        console.log(data); // If it's successful, it should log the data
+        document.getElementById('city-label').innerText = data.name || "API Response OK";
+    } catch (e) {
+        console.warn("API Key Error: " + e.message);
+        document.getElementById('city-label').innerText = "API KEY ERROR - Please check connection";
+        alert("Error with the API request: " + e.message);  // Show an alert if something goes wrong
+    }
+}
+
+// Run the test on page load
+testAPI();
+
+// 4. Meteorological Engine (Supports OWM Hardcode)
 async function getAtmosphere(lat, lng, name) {
     const apiUnit = unitMode === 'fahrenheit' ? 'imperial' : 'metric';
     
@@ -42,7 +60,7 @@ async function getAtmosphere(lat, lng, name) {
 
     } catch (e) {
         console.warn("OWM Key Sync Failed - Ensure API Key is hardcoded in script.js");
-        document.getElementById('city-label').innerText = "API KEY REQUIRED";
+        document.getElementById('city-label').innerText = "API KEY ERROR - Please check connection";
     }
 
     // Load 7-Day Extension via Meteor-Standard (Free-tier friendly)
@@ -70,7 +88,7 @@ async function getAtmosphere(lat, lng, name) {
     } catch (e) { console.error("Forecast Error"); }
 }
 
-// 4. UI Events
+// 5. UI Events
 document.getElementById('btn-c').onclick = function() {
     unitMode = 'celsius'; this.classList.add('active'); 
     document.getElementById('btn-f').classList.remove('active');
@@ -84,7 +102,7 @@ document.getElementById('grad-start').oninput = (e) => document.documentElement.
 document.getElementById('grad-end').oninput = (e) => document.documentElement.style.setProperty('--g2', e.target.value);
 document.getElementById('bg-picker').oninput = (e) => document.documentElement.style.setProperty('--bg', e.target.value);
 
-// 5. Leaflet Geographic Map
+// 6. Leaflet Geographic Map
 let map = L.map('map').setView([44.0, -120.0], 4);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
