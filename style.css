@@ -115,57 +115,20 @@ body {
     opacity: 0.7;
     letter-spacing: 2px;
 }
-
-/* ============================= */
-/* NEW SMOOTH REFLECTION SYSTEM  */
-/* ============================= */
-
+/* Reflection tool */
 #reflection-container {
     position: relative;
-    transform: scaleY(-1);
-    opacity: 0.35;
-    filter: blur(2px);
+    height: 200px;
+    width: 100%;
+    opacity: 0.4;
     overflow: hidden;
 }
 
-/* Fading gradient mask */
-#reflection-container::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        to top,
-        rgba(0,0,0,0.85) 20%,
-        rgba(0,0,0,0.5) 50%,
-        transparent 100%
-    );
+#reflection-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
-
-/* Moving shimmer layer */
-#reflection-container::before {
-    content: "";
-    position: absolute;
-    inset: -50%;
-    background: repeating-linear-gradient(
-        to top,
-        rgba(255,255,255,0.05) 0px,
-        rgba(255,255,255,0.05) 2px,
-        transparent 4px,
-        transparent 14px
-    );
-    animation: waterFlow var(--wave-speed) linear infinite;
-}
-
-@keyframes waterFlow {
-    from { transform: translateY(0); }
-    to { transform: translateY(-50%); }
-}
-
-#clock-reflection { 
-    font-size: clamp(90px, 18vw, 220px); 
-    font-weight: 900; 
-}
-
 /* FORECAST BAR */
 #forecast-bar {
     position: fixed; 
