@@ -3,6 +3,7 @@
  */
 const OWM_API_KEY = '1c0040b3f90c6dd5de9a748785fc56cf'; // <--- PASTE KEY HERE
 let unitMode = 'fahrenheit'; 
+let waveIntensity = 45;  // Default intensity
 
 // 1. Clock Logic
 function runClock() {
@@ -17,32 +18,14 @@ runClock();
 let phase = 0;
 function animateWaves() {
     phase += 0.005;
-    const ripple = 0.05 + Math.sin(phase) * 0.02;
+    const ripple = (waveIntensity / 100) + Math.sin(phase) * 0.02;
     const turb = document.querySelector('feTurbulence');
     if (turb) turb.setAttribute('baseFrequency', `0.01 ${ripple}`);
     requestAnimationFrame(animateWaves);
 }
 animateWaves();
 
-// 3. Test API to Check If It's Working
-async function testAPI() {
-    const testUrl = `https://api.openweathermap.org/data/2.5/weather?lat=37.7749&lon=-122.4194&appid=${OWM_API_KEY}&units=imperial`; // San Francisco coordinates
-    try {
-        const res = await fetch(testUrl);
-        const data = await res.json();
-        console.log(data); // If it's successful, it should log the data
-        document.getElementById('city-label').innerText = data.name || "API Response OK";
-    } catch (e) {
-        console.warn("API Key Error: " + e.message);
-        document.getElementById('city-label').innerText = "API KEY ERROR - Please check connection";
-        alert("Error with the API request: " + e.message);  // Show an alert if something goes wrong
-    }
-}
-
-// Run the test on page load
-testAPI();
-
-// 4. Meteorological Engine (Supports OWM Hardcode)
+// 3. Meteorological Engine (Supports OWM Hardcode)
 async function getAtmosphere(lat, lng, name) {
     const apiUnit = unitMode === 'fahrenheit' ? 'imperial' : 'metric';
     
@@ -88,7 +71,7 @@ async function getAtmosphere(lat, lng, name) {
     } catch (e) { console.error("Forecast Error"); }
 }
 
-// 5. UI Events
+// 4. UI Events
 document.getElementById('btn-c').onclick = function() {
     unitMode = 'celsius'; this.classList.add('active'); 
     document.getElementById('btn-f').classList.remove('active');
@@ -101,6 +84,11 @@ document.getElementById('btn-f').onclick = function() {
 document.getElementById('grad-start').oninput = (e) => document.documentElement.style.setProperty('--g1', e.target.value);
 document.getElementById('grad-end').oninput = (e) => document.documentElement.style.setProperty('--g2', e.target.value);
 document.getElementById('bg-picker').oninput = (e) => document.documentElement.style.setProperty('--bg', e.target.value);
+
+// 5. Wave Intensity Slider
+document.getElementById('wave-intensity').oninput = (e) => {
+    waveIntensity = e.target.value;  // Update wave intensity
+};
 
 // 6. Leaflet Geographic Map
 let map = L.map('map').setView([44.0, -120.0], 4);
