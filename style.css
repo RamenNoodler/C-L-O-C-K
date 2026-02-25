@@ -10,10 +10,14 @@ body {
     font-family: 'Orbitron', sans-serif; overflow: hidden; color: white;
 }
 
-#app-bg-layer { 
-    position: fixed; inset: 0; 
+/* Fullscreen Background (scaled to fill the screen) */
+.fullscreen-bg {
+    position: fixed;
+    inset: 0;
     background: radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, var(--bg) 100%);
-    transition: 0.8s; z-index: -1; 
+    transition: 0.8s;
+    z-index: -1;
+    object-fit: cover;  /* Ensures image or background fills the screen */
 }
 
 /* THEME SYSTEM */
@@ -70,16 +74,14 @@ body {
 .toggle-row button.active { border-color: var(--g1); background: rgba(255,255,255,0.1); }
 #map { height: 220px; width: 100%; border: 1px solid #222; margin-top: 10px; border-radius: 4px; }
 
-/* Wave Intensity Slider */
-.setting-item input[type="range"] {
-    width: 100%;
-    margin-top: 10px;
-    -webkit-appearance: none;
-    background: var(--g1);
-    height: 5px;
-    border-radius: 5px;
-    outline: none;
+/* Add some spacing to the sliders and labels */
+.setting-item {
+    margin-bottom: 25px;
 }
-.setting-item input[type="range"]:focus {
-    background: var(--g2);
+.setting-item label {
+    font-size: 0.7rem;
+    color: var(--g1);
+    display: block;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
 }
