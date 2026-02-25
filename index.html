@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atmospheric Study Clock</title>
+    <title>Clock</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
@@ -25,7 +25,11 @@
     </header>
 
     <main id="clock-stage">
-        <div id="clock-digits" class="grad-text">00:00:00</div>
+        <div id="clock-wrapper">
+            <div id="clock-digits" class="grad-text">00:00:00</div>
+            <span id="ampm-tag">AM</span>
+        </div>
+
         <div id="reflection-container">
             <div id="clock-reflection" class="grad-text">00:00:00</div>
         </div>
@@ -57,6 +61,14 @@
             <div class="toggle-row">
                 <button id="btn-c">Celsius (°C)</button>
                 <button id="btn-f" class="active">Fahrenheit (°F)</button>
+            </div>
+        </div>
+
+        <div class="setting-item">
+            <label>Clock Format</label>
+            <div class="toggle-row">
+                <button id="btn-12" class="active">12 Hour</button>
+                <button id="btn-24">24 Hour</button>
             </div>
         </div>
 
