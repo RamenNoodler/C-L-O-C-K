@@ -56,9 +56,11 @@ body {
 }
 
 #reflection-container {
-    transform: scaleY(-1); opacity: 0.3; filter: url(#ripple-filter) blur(2px);
-    mask-image: linear-gradient(to top, black 25%, transparent 95%);
-    -webkit-mask-image: linear-gradient(to top, black 25%, transparent 95%);
+    transform: scaleY(-1);
+    opacity: 0.4;
+    filter: url(#ripple-filter) blur(3px);
+    mask-image: linear-gradient(to top, rgba(0,0,0,0.9) 30%, transparent 95%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.9) 30%, transparent 95%);
 }
 #clock-reflection { font-size: clamp(60px, 15vw, 180px); font-weight: 900; }
 
