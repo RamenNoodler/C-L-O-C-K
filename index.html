@@ -9,15 +9,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- LAYER 1: YOUTUBE VIDEO -->
-    <div id="video-container">
-        <div id="player"></div>
-    </div>
+    <!-- Solid/Gradient Background Layer -->
+    <div id="app-bg-layer"></div>
 
-    <!-- LAYER 2: COLOR TINT OVERLAY -->
-    <div id="app-bg-overlay"></div>
-
-    <!-- LAYER 3: APP UI -->
     <header class="hud-top">
         <div id="weather-widget" class="glass-ui theme-border">
             <div id="city-label" class="mini-tag">SYSTEM IDLE</div>
@@ -42,6 +36,7 @@
         <div id="forecast-container"></div>
     </footer>
 
+    <!-- Water Distortion Filter -->
     <svg style="display:none">
         <filter id="ripple-filter">
             <feTurbulence type="fractalNoise" baseFrequency="0.01 0.1" numOctaves="2" result="noise" />
@@ -56,26 +51,15 @@
         </div>
 
         <div class="setting-item">
-            <label>YouTube Video ID</label>
-            <input type="text" id="yt-id-field" placeholder="e.g. jfKfPfyJRdk" value="jfKfPfyJRdk">
-            <small>Find a video on YT and paste the ID here.</small>
-        </div>
-
-        <div class="setting-item">
-            <label>Weather API Key (OpenWeather)</label>
-            <input type="password" id="api-field" placeholder="Paste Key Here...">
-        </div>
-
-        <div class="setting-item">
             <label>Temperature Units</label>
             <div class="toggle-row">
-                <button id="btn-c">Celsius</button>
-                <button id="btn-f" class="active">Fahrenheit</button>
+                <button id="btn-c">Celsius (°C)</button>
+                <button id="btn-f" class="active">Fahrenheit (°F)</button>
             </div>
         </div>
 
         <div class="setting-item">
-            <label>Clock Gradient (Top/Bottom)</label>
+            <label>Clock Gradient (Start / End)</label>
             <div class="picker-row">
                 <input type="color" id="grad-start" value="#00f2ff">
                 <span>→</span>
@@ -84,17 +68,16 @@
         </div>
 
         <div class="setting-item">
-            <label>Overlay Tint / Background</label>
-            <input type="color" id="bg-picker" value="#000000">
+            <label>Environment Background</label>
+            <input type="color" id="bg-picker" value="#0a0a0c">
         </div>
 
         <div class="setting-item">
-            <label>Location Search</label>
+            <label>Geographic Targeting</label>
             <div id="map"></div>
         </div>
     </aside>
 
-    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
