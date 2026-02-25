@@ -1,7 +1,7 @@
 /**
  * SETTINGS - SYNC WITH PYTHON SCRIPT
  */
-const OWM_API_KEY = 'PASTE_YOUR_OPENWEATHER_API_KEY_HERE'; // <--- PASTE KEY HERE
+const OWM_API_KEY = '1c0040b3f90c6dd5de9a748785fc56cf'; // <--- PASTE KEY HERE
 let unitMode = 'fahrenheit'; 
 
 // 1. Clock Logic
