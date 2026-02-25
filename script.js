@@ -18,10 +18,15 @@ runClock();
 let phase = 0;
 function animateWaves() {
     phase += 0.005;
-    const ripple = (waveIntensity / 100) + Math.sin(phase) * 0.02;
+    const ripple = (waveIntensity / 100) + Math.sin(phase) * 0.02; // Adjust ripple intensity with waveIntensity
+
+    // Find the feTurbulence filter element
     const turb = document.querySelector('feTurbulence');
-    if (turb) turb.setAttribute('baseFrequency', `0.01 ${ripple}`);
-    requestAnimationFrame(animateWaves);
+    if (turb) {
+        turb.setAttribute('baseFrequency', `0.01 ${ripple}`); // Dynamically set the wave intensity
+    }
+
+    requestAnimationFrame(animateWaves); // Keep animating
 }
 animateWaves();
 
