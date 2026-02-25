@@ -3,8 +3,7 @@
  */
 const OWM_API_KEY = '1c0040b3f90c6dd5de9a748785fc56cf'; // <--- PASTE KEY HERE
 let unitMode = 'fahrenheit'; 
-let waveIntensity = 5;  // Default intensity (1–10 scale)
-let waveSpeed = 0.005;  // Default wave speed
+let waveIntensity = 45;  // Default intensity
 
 // 1. Clock Logic
 function runClock() {
@@ -18,16 +17,11 @@ runClock();
 // 2. Wave Distort Animation
 let phase = 0;
 function animateWaves() {
-    phase += waveSpeed; // Modify wave speed based on slider
-    const ripple = (waveIntensity / 10) + Math.sin(phase) * 0.02;  // Adjust ripple intensity with waveIntensity
-
-    // Find the feTurbulence filter element
+    phase += 0.005;
+    const ripple = (waveIntensity / 100) + Math.sin(phase) * 0.02;
     const turb = document.querySelector('feTurbulence');
-    if (turb) {
-        turb.setAttribute('baseFrequency', `0.01 ${ripple}`); // Dynamically set the wave intensity
-    }
-
-    requestAnimationFrame(animateWaves); // Keep animating
+    if (turb) turb.setAttribute('baseFrequency', `0.01 ${ripple}`);
+    requestAnimationFrame(animateWaves);
 }
 animateWaves();
 
@@ -93,15 +87,10 @@ document.getElementById('bg-picker').oninput = (e) => document.documentElement.s
 
 // 5. Wave Intensity Slider
 document.getElementById('wave-intensity').oninput = (e) => {
-    waveIntensity = e.target.value;  // Update wave intensity (1-10 scale)
+    waveIntensity = e.target.value;  // Update wave intensity
 };
 
-// 6. Wave Speed Slider
-document.getElementById('wave-speed').oninput = (e) => {
-    waveSpeed = parseFloat(e.target.value);  // Update wave speed (0.001 to 0.05)
-};
-
-// 7. Leaflet Geographic Map
+// 6. Leaflet Geographic Map
 let map = L.map('map').setView([44.0, -120.0], 4);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
