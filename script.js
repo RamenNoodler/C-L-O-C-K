@@ -3,11 +3,34 @@
  */
 const OWM_API_KEY = '1c0040b3f90c6dd5de9a748785fc56cf'; // <--- PASTE KEY HERE
 let unitMode = 'fahrenheit'; 
-let waveIntensity = 45;  // Default intensity
+let clockMode = '12'; // default
+let waveIntensity = 5;  // Default intensity (1–10 scale)
+let waveSpeed = 0.005;  // Default wave speed
 
 // 1. Clock Logic
 function runClock() {
-    const timeString = new Date().toLocaleTimeString('en-US', { hour12: false });
+    const now = new Date();
+
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    let seconds = now.getSeconds();
+    let ampm = '';
+
+    if (clockMode === '12') {
+        ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // 0 becomes 12
+        document.getElementById('ampm-tag').style.display = 'block';
+        document.getElementById('ampm-tag').innerText = ampm;
+    } else {
+        document.getElementById('ampm-tag').style.display = 'none';
+    }
+
+    const timeString =
+        String(hours).padStart(2, '0') + ':' +
+        String(minutes).padStart(2, '0') + ':' +
+        String(seconds).padStart(2, '0');
+
     document.getElementById('clock-digits').innerText = timeString;
     document.getElementById('clock-reflection').innerText = timeString;
 }
@@ -17,11 +40,16 @@ runClock();
 // 2. Wave Distort Animation
 let phase = 0;
 function animateWaves() {
-    phase += 0.005;
-    const ripple = (waveIntensity / 100) + Math.sin(phase) * 0.02;
+    phase += waveSpeed; // Modify wave speed based on slider
+    const ripple = (waveIntensity / 10) + Math.sin(phase) * 0.02;  // Adjust ripple intensity with waveIntensity
+
+    // Find the feTurbulence filter element
     const turb = document.querySelector('feTurbulence');
-    if (turb) turb.setAttribute('baseFrequency', `0.01 ${ripple}`);
-    requestAnimationFrame(animateWaves);
+    if (turb) {
+        turb.setAttribute('baseFrequency', `0.01 ${ripple}`); // Dynamically set the wave intensity
+    }
+
+    requestAnimationFrame(animateWaves); // Keep animating
 }
 animateWaves();
 
@@ -87,10 +115,15 @@ document.getElementById('bg-picker').oninput = (e) => document.documentElement.s
 
 // 5. Wave Intensity Slider
 document.getElementById('wave-intensity').oninput = (e) => {
-    waveIntensity = e.target.value;  // Update wave intensity
+    waveIntensity = e.target.value;  // Update wave intensity (1-10 scale)
 };
 
-// 6. Leaflet Geographic Map
+// 6. Wave Speed Slider
+document.getElementById('wave-speed').oninput = (e) => {
+    waveSpeed = parseFloat(e.target.value);  // Update wave speed (0.001 to 0.05)
+};
+
+// 7. Leaflet Geographic Map
 let map = L.map('map').setView([44.0, -120.0], 4);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
@@ -109,6 +142,23 @@ map.on('click', e => getAtmosphere(e.latlng.lat, e.latlng.lng, "Pinned Zone"));
 // Sidebar Toggle
 document.getElementById('sidebar-toggle').onclick = () => {
     document.getElementById('settings-sidebar').classList.add('active');
-    setTimeout(() => map.invalidateSize(), 400); // Reveal map correctly
+    setTimeout(() => map.invalidateSize(), 400); // Reveal map correctly after sidebar opens
 };
-document.getElementById('close-sidebar').onclick = () => document.getElementById('settings-sidebar').classList.remove('active');
+
+// Close Sidebar
+document.getElementById('close-sidebar').onclick = () => {
+    document.getElementById('settings-sidebar').classList.remove('active');
+};
+
+// Clock Format Toggle
+document.getElementById('btn-12').onclick = function() {
+    clockMode = '12';
+    this.classList.add('active');
+    document.getElementById('btn-24').classList.remove('active');
+};
+
+document.getElementById('btn-24').onclick = function() {
+    clockMode = '24';
+    this.classList.add('active');
+    document.getElementById('btn-12').classList.remove('active');
+};
