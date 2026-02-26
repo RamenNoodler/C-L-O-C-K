@@ -66,16 +66,17 @@ document.getElementById('btn-24').onclick = function() {
     document.getElementById('btn-12').classList.remove('active');
 };
 
-/* CANVAS REFLECTION */
+/* ===== CLEAN WAVY REFLECTION ===== */
 
 const canvas = document.getElementById("reflection-canvas");
 const ctx = canvas.getContext("2d");
+
+let wavePhase = 0;
 
 function resizeCanvas() {
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
 }
-
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
@@ -83,37 +84,60 @@ function drawReflection() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     const text = document.getElementById("clock-digits").innerText;
-    const fontSize = canvas.height * 0.8;
 
-    ctx.save();
-    ctx.translate(canvas.width / 2, 0);
-    ctx.scale(1, -1);
+    const fontSize = canvas.height * 0.7;
 
-    ctx.font = `900 ${fontSize}px Orbitron`;
-    ctx.textAlign = "center";
+    // Create offscreen canvas
+    const offCanvas = document.createElement("canvas");
+    const offCtx = offCanvas.getContext("2d");
 
-    const gradient = ctx.createLinearGradient(0, 0, 0, -fontSize);
+    offCanvas.width = canvas.width;
+    offCanvas.height = canvas.height;
+
+    offCtx.font = `900 ${fontSize}px Orbitron`;
+    offCtx.textAlign = "center";
+
+    const gradient = offCtx.createLinearGradient(0, 0, 0, fontSize);
     gradient.addColorStop(0, getComputedStyle(document.documentElement).getPropertyValue('--g1'));
     gradient.addColorStop(1, getComputedStyle(document.documentElement).getPropertyValue('--g2'));
 
-    ctx.fillStyle = gradient;
+    offCtx.fillStyle = gradient;
 
-    for (let y = 0; y < canvas.height; y++) {
-        const distortion =
-            Math.sin((y * 0.05) + wavePhase) * waveIntensity;
+    offCtx.fillText(text, offCanvas.width / 2, fontSize);
 
-        ctx.fillText(text, distortion, -y);
+    // Flip main canvas
+    ctx.save();
+    ctx.translate(0, canvas.height);
+    ctx.scale(1, -1);
+
+    const sliceHeight = 2;
+
+    for (let y = 0; y < canvas.height; y += sliceHeight) {
+        const offset = Math.sin(y * 0.03 + wavePhase) * waveIntensity;
+
+        ctx.drawImage(
+            offCanvas,
+            0, y, canvas.width, sliceHeight,
+            offset, y,
+            canvas.width, sliceHeight
+        );
     }
 
     ctx.restore();
 
-    wavePhase += waveSpeed;
+    // Fade out
+    const fade = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    fade.addColorStop(0, "rgba(0,0,0,0.1)");
+    fade.addColorStop(1, "rgba(0,0,0,1)");
 
+    ctx.fillStyle = fade;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    wavePhase += waveSpeed;
     requestAnimationFrame(drawReflection);
 }
 
 drawReflection();
-
 /* SLIDERS */
 
 document.getElementById("wave-intensity").oninput = (e) => {
