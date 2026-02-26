@@ -1,102 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clock</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Solid/Gradient Background Layer -->
-    <div id="app-bg-layer" class="fullscreen-bg"></div>
 
-    <header class="hud-top">
-        <div id="weather-widget" class="glass-ui theme-border">
-            <div id="city-label" class="mini-tag">SYSTEM IDLE</div>
-            <div class="main-stats">
-                <span id="temp-val" class="grad-text">--</span>
-                <span id="unit-val">°F</span>
-                <span id="cond-tag" class="theme-bg">STBY</span>
-            </div>
-        </div>
-        <button id="sidebar-toggle" class="glass-btn theme-border">⚙️ SETTINGS</button>
-    </header>
+<button id="sidebar-toggle">⚙</button>
 
-    <main id="clock-stage">
-        <div id="clock-wrapper">
-            <div id="clock-digits" class="grad-text">00:00:00</div>
-            <span id="ampm-tag">AM</span>
-        </div>
+<div class="clock-wrapper">
+    <div id="clock-digits">00:00:00</div>
+    <div id="ampm-tag">AM</div>
+</div>
 
 <div id="reflection-container">
     <canvas id="reflection-canvas"></canvas>
 </div>
-    </main>
 
-    <footer id="forecast-bar" class="theme-border-top">
-        <div class="forecast-header">7-DAY GEOGRAPHIC PROJECTION</div>
-        <div id="forecast-container"></div>
-    </footer>
+<aside id="settings-sidebar" class="sidebar">
+    <h2>Settings</h2>
 
+    <label>Wave Intensity</label>
+    <input type="range" id="wave-intensity" min="0" max="40" value="12">
 
+    <label>Wave Speed</label>
+    <input type="range" id="wave-speed" min="1" max="100" value="4">
 
-    <!-- Settings Sidebar -->
-    <aside id="settings-sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h3>LOGISTICS</h3>
-            <button id="close-sidebar">×</button>
-        </div>
+    <label>Clock Format</label>
+    <div class="clock-buttons">
+        <button id="btn-12" class="active">12 Hour</button>
+        <button id="btn-24">24 Hour</button>
+    </div>
 
-        <!-- Settings Controls -->
-        <div class="setting-item">
-            <label>Temperature Units</label>
-            <div class="toggle-row">
-                <button id="btn-c">Celsius (°C)</button>
-                <button id="btn-f" class="active">Fahrenheit (°F)</button>
-            </div>
-        </div>
+    <button id="close-sidebar">Close</button>
+</aside>
 
-        <div class="setting-item">
-            <label>Clock Format</label>
-            <div class="toggle-row">
-                <button id="btn-12" class="active">12 Hour</button>
-                <button id="btn-24">24 Hour</button>
-            </div>
-        </div>
-
-        <div class="setting-item">
-            <label>Clock Gradient (Start / End)</label>
-            <div class="picker-row">
-                <input type="color" id="grad-start" value="#00f2ff">
-                <span>→</span>
-                <input type="color" id="grad-end" value="#7000ff">
-            </div>
-        </div>
-
-        <div class="setting-item">
-            <label>Environment Background</label>
-            <input type="color" id="bg-picker" value="#0a0a0c">
-        </div>
-
-        <div class="setting-item">
-            <label>Wave Intensity</label>
-            <input type="range" id="wave-intensity" min="1" max="10" value="5" step="1">
-        </div>
-
-        <div class="setting-item">
-            <label>Wave Speed</label>
-            <input type="range" id="wave-speed" min="0.001" max="0.05" value="0.005" step="0.001">
-        </div>
-
-        <div class="setting-item">
-            <label>Geographic Targeting</label>
-            <div id="map"></div>
-        </div>
-    </aside>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
