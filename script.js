@@ -1,13 +1,10 @@
-/**
- * SETTINGS - SYNC WITH PYTHON SCRIPT
- */
-const OWM_API_KEY = '1c0040b3f90c6dd5de9a748785fc56cf'; // <--- PASTE KEY HERE
-let unitMode = 'fahrenheit'; 
-let clockMode = '12'; // default
-let waveIntensity = 10;  // Default intensity (1–30 scale)
-let waveSpeed = 0.05;  // Default wave speed
+let clockMode = '12';
+let waveIntensity = 12;
+let waveSpeed = 0.04;
+let wavePhase = 0;
 
-// 1. Clock Logic
+/* CLOCK */
+
 function runClock() {
     const now = new Date();
 
@@ -19,7 +16,7 @@ function runClock() {
     if (clockMode === '12') {
         ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
-        hours = hours ? hours : 12; // 0 becomes 12
+        hours = hours ? hours : 12;
         document.getElementById('ampm-tag').style.display = 'block';
         document.getElementById('ampm-tag').innerText = ampm;
     } else {
@@ -32,21 +29,53 @@ function runClock() {
         String(seconds).padStart(2, '0');
 
     document.getElementById('clock-digits').innerText = timeString;
-    document.getElementById('clock-reflection').innerText = timeString;
 }
+
 setInterval(runClock, 1000);
 runClock();
 
-// 2. REAL WATER WAVE REFLECTION (Canvas-based)
+/* SIDEBAR SAFE LOAD */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const sidebar = document.getElementById("settings-sidebar");
+    const toggleBtn = document.getElementById("sidebar-toggle");
+    const closeBtn = document.getElementById("close-sidebar");
+
+    toggleBtn.addEventListener("click", function () {
+        sidebar.classList.add("active");
+    });
+
+    closeBtn.addEventListener("click", function () {
+        sidebar.classList.remove("active");
+    });
+
+});
+
+/* CLOCK MODE TOGGLE */
+
+document.getElementById('btn-12').onclick = function() {
+    clockMode = '12';
+    this.classList.add('active');
+    document.getElementById('btn-24').classList.remove('active');
+};
+
+document.getElementById('btn-24').onclick = function() {
+    clockMode = '24';
+    this.classList.add('active');
+    document.getElementById('btn-12').classList.remove('active');
+};
+
+/* CANVAS REFLECTION */
+
 const canvas = document.getElementById("reflection-canvas");
 const ctx = canvas.getContext("2d");
-
-let wavePhase = 0;
 
 function resizeCanvas() {
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
 }
+
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
@@ -70,36 +99,27 @@ function drawReflection() {
     ctx.fillStyle = gradient;
 
     for (let y = 0; y < canvas.height; y++) {
-        const distortion = Math.sin((y * 0.05) + wavePhase) * waveIntensity;
+        const distortion =
+            Math.sin((y * 0.05) + wavePhase) * waveIntensity;
+
         ctx.fillText(text, distortion, -y);
     }
 
     ctx.restore();
 
     wavePhase += waveSpeed;
+
     requestAnimationFrame(drawReflection);
 }
 
 drawReflection();
 
-// 3. Wave Intensity & Speed Controls
+/* SLIDERS */
+
 document.getElementById("wave-intensity").oninput = (e) => {
     waveIntensity = parseFloat(e.target.value);
 };
 
 document.getElementById("wave-speed").oninput = (e) => {
     waveSpeed = parseFloat(e.target.value) / 100;
-};
-
-// 4. 12-hour/24-hour clock mode switch
-document.getElementById('btn-12').onclick = function() {
-    clockMode = '12';
-    this.classList.add('active');
-    document.getElementById('btn-24').classList.remove('active');
-};
-
-document.getElementById('btn-24').onclick = function() {
-    clockMode = '24';
-    this.classList.add('active');
-    document.getElementById('btn-12').classList.remove('active');
 };
